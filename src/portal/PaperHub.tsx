@@ -46,7 +46,7 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Top Hub Navbar */}
       <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
@@ -102,24 +102,26 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
             {/* Quick Stats Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                <span className="text-[11px] text-slate-400 block">收录论文</span>
-                <span className="text-xl font-bold font-mono text-white mt-0.5 block">1 篇全功能</span>
-                <span className="text-[10px] text-emerald-400">已扩展架构标准</span>
+                <span className="text-[11px] text-slate-400 block">收录全功能论文</span>
+                <span className="text-xl font-bold font-mono text-white mt-0.5 block">
+                  {REGISTERED_PAPERS.filter(p => p.status === 'active').length} 篇全功能
+                </span>
+                <span className="text-[10px] text-emerald-400">RAG / DPR / ColBERT / DecisionRAG</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
                 <span className="text-[11px] text-slate-400 block">概念双解词条</span>
-                <span className="text-xl font-bold font-mono text-emerald-400 mt-0.5 block">20+ 项</span>
+                <span className="text-xl font-bold font-mono text-emerald-400 mt-0.5 block">40+ 项</span>
                 <span className="text-[10px] text-slate-400">白话比喻 + 严谨定义</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                <span className="text-[11px] text-slate-400 block">在线算法实验台</span>
-                <span className="text-xl font-bold font-mono text-white mt-0.5 block">100% 交互</span>
-                <span className="text-[10px] text-teal-400">单步前向与束搜索</span>
+                <span className="text-[11px] text-slate-400 block">专属算法实验台</span>
+                <span className="text-xl font-bold font-mono text-white mt-0.5 block">4 套模拟器</span>
+                <span className="text-[10px] text-teal-400">边缘化 / 对比矩阵 / MaxSim / 树导航</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
                 <span className="text-[11px] text-slate-400 block">评测对比基准</span>
-                <span className="text-xl font-bold font-mono text-white mt-0.5 block">4 大 Benchmark</span>
-                <span className="text-[10px] text-slate-400">含268万维基段落</span>
+                <span className="text-xl font-bold font-mono text-white mt-0.5 block">10+ Benchmark</span>
+                <span className="text-[10px] text-slate-400">NQ / MS MARCO / MultiDoc2Dial</span>
               </div>
             </div>
           </div>
@@ -272,7 +274,7 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
                                 onClick={() => onSelectPaper(paper.id, 'simulator')}
                                 className="py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[11px] transition-colors cursor-pointer text-center"
                               >
-                                🔬 决策实验台
+                                🔬 算法实验台
                               </button>
                             </div>
                           </>

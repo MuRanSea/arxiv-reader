@@ -18,10 +18,13 @@ export default function App() {
         const view = params.get('view') || 'beginner';
         setActivePaperId(paperId);
         setInitialView(view);
+        window.scrollTo(0, 0);
       } else if (hash.includes('decisionrag')) {
         setActivePaperId('decisionrag');
+        window.scrollTo(0, 0);
       } else {
         setActivePaperId(null);
+        window.scrollTo(0, 0);
       }
     };
 

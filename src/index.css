@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* =========================================================================
+   1. Unified Token-Driven Dual-Theme Architecture (暗色深空 / 亮色护眼学术纸张)
+   Tailwind CSS v4 computes all utility classes (including /10../90 opacity
+   modifiers, gradients, borders, rings, dividers, and hover states) from
+   the --color-* custom properties below. By remapping the semantic tokens
+   on html[data-theme="light"], every existing and future paper module
+   automatically adapts without missing any opacity or state variant.
+   ========================================================================= */
+
 :root,
 html[data-theme="dark"] {
   --app-bg: #020617;
@@ -15,10 +24,172 @@ html[data-theme="light"] {
   --app-bg: #f8fafc;
   --app-surface: #ffffff;
   --app-surface-elevated: #f1f5f9;
-  --app-border: #e2e8f0;
+  --app-border: #cbd5e1;
   --app-text: #0f172a;
   --app-text-muted: #475569;
   color-scheme: light;
+
+  /* Remap Tailwind v4 Slate Scale (Surfaces, Borders & Typography) */
+  --color-slate-950: #f1f5f9;
+  --color-slate-900: #ffffff;
+  --color-slate-800: #e2e8f0;
+  --color-slate-700: #cbd5e1;
+  --color-slate-600: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-400: #475569;
+  --color-slate-300: #334155;
+  --color-slate-200: #1e293b;
+  --color-slate-100: #0f172a;
+
+  /* Remap Emerald Scale for High-Contrast Light Mode Readability */
+  --color-emerald-950: #ecfdf5;
+  --color-emerald-900: #a7f3d0;
+  --color-emerald-800: #6ee7b7;
+  --color-emerald-600: #059669;
+  --color-emerald-500: #10b981;
+  --color-emerald-400: #047857;
+  --color-emerald-300: #065f46;
+  --color-emerald-200: #064e3b;
+
+  /* Remap Teal Scale for Light Mode */
+  --color-teal-950: #f0fdfa;
+  --color-teal-900: #99f6e4;
+  --color-teal-700: #0f766e;
+  --color-teal-600: #0d9488;
+  --color-teal-500: #14b8a6;
+  --color-teal-400: #0f766e;
+  --color-teal-300: #115e59;
+
+  /* Remap Amber Scale for Light Mode */
+  --color-amber-950: #fffbeb;
+  --color-amber-900: #fde68a;
+  --color-amber-800: #fcd34d;
+  --color-amber-500: #f59e0b;
+  --color-amber-400: #b45309;
+  --color-amber-300: #92400e;
+  --color-amber-200: #78350f;
+  --color-amber-100: #451a03;
+
+  /* Remap Red Scale for Light Mode */
+  --color-red-950: #fef2f2;
+  --color-red-900: #fecaca;
+  --color-red-500: #ef4444;
+  --color-red-400: #dc2626;
+  --color-red-300: #991b1b;
+}
+
+/* =========================================================================
+   2. High-Contrast Mouse Text Selection (::selection)
+   Fixes unreadable pale-on-pale text selection in Light Mode
+   ========================================================================= */
+
+html[data-theme="dark"] ::selection,
+html[data-theme="dark"] *::selection {
+  background-color: rgba(16, 185, 129, 0.35) !important;
+  color: #ecfdf5 !important;
+}
+
+html[data-theme="light"] ::selection,
+html[data-theme="light"] *::selection {
+  background-color: #a7f3d0 !important;
+  color: #022c22 !important;
+}
+
+/* =========================================================================
+   3. Light Mode Surface Depth, White Text & Solid Button Contrast Safeguards
+   ========================================================================= */
+
+/* 3-Tier Surface Depth: Outer Page (#f8fafc) -> Card (#ffffff) -> Inner Box (#f1f5f9) */
+html[data-theme="light"] body,
+html[data-theme="light"] .min-h-screen.bg-slate-950 {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] header.bg-slate-900\/90 {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Headings and hovered items using text-white become deep slate ink in Light Mode */
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .hover\:text-white:hover {
+  color: #0f172a !important;
+}
+
+/* Preserve white icons inside solid brand gradient badges */
+html[data-theme="light"] .from-emerald-500 .text-white,
+html[data-theme="light"] .bg-emerald-500 .text-white,
+html[data-theme="light"] .bg-emerald-600 .text-white {
+  color: #ffffff !important;
+}
+
+/* Preserve dark high-contrast text inside solid emerald/teal/amber buttons */
+html[data-theme="light"] .text-slate-950 {
+  color: #022c22 !important;
+}
+
+/* Keep modal backdrop dark translucent in Light Mode */
+html[data-theme="light"] .bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Soften card shadows in Light Mode for clean academic paper feel */
+html[data-theme="light"] .shadow-xl,
+html[data-theme="light"] .shadow-2xl,
+html[data-theme="light"] .shadow-lg {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* =========================================================================
+   4. Global Font Size Scaling System (小 / 中 / 大)
+   Overrides Tailwind v4 --text-* variables plus arbitrary pixel classes so
+   every view (Guide, Reader, Simulator, Comparison, Glossary) scales cleanly.
+   ========================================================================= */
+
+.paper-fontsize-sm {
+  --text-xs: 0.7rem;
+  --text-sm: 0.8rem;
+  --text-base: 0.9rem;
+  --text-lg: 1.025rem;
+  --text-xl: 1.15rem;
+  --text-2xl: 1.35rem;
+  --text-3xl: 1.6rem;
+  --text-4xl: 1.9rem;
+}
+
+.paper-fontsize-sm .text-\[10px\],
+.paper-fontsize-sm .text-\[11px\] {
+  font-size: 0.65rem !important;
+  line-height: 1.4 !important;
+}
+
+.paper-fontsize-md {
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+}
+
+.paper-fontsize-lg {
+  --text-xs: 0.9rem;
+  --text-sm: 1.05rem;
+  --text-base: 1.2rem;
+  --text-lg: 1.375rem;
+  --text-xl: 1.55rem;
+  --text-2xl: 1.85rem;
+  --text-3xl: 2.15rem;
+  --text-4xl: 2.5rem;
+}
+
+.paper-fontsize-lg .text-\[10px\],
+.paper-fontsize-lg .text-\[11px\] {
+  font-size: 0.825rem !important;
+  line-height: 1.55 !important;
 }
 
 /* Smooth theme & font-size transitions */
@@ -37,310 +208,5 @@ table,
 tr,
 td,
 th {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
-}
-
-/* =========================================================================
-   Global Font Size Scaling System (小 / 中 / 大)
-   Applies across all 5 views inside a paper module (Guide, Reader, Simulator,
-   Comparison, Glossary) so changing font size always gives immediate feedback.
-   ========================================================================= */
-
-.paper-fontsize-sm .text-\[10px\],
-.paper-fontsize-sm .text-\[11px\] {
-  font-size: 0.65rem !important;
-  line-height: 1.4 !important;
-}
-.paper-fontsize-sm .text-xs,
-.paper-fontsize-sm .sm\:text-xs {
-  font-size: 0.72rem !important;
-  line-height: 1.45 !important;
-}
-.paper-fontsize-sm .text-sm,
-.paper-fontsize-sm .sm\:text-sm {
-  font-size: 0.8125rem !important;
-  line-height: 1.55 !important;
-}
-.paper-fontsize-sm .text-base,
-.paper-fontsize-sm .sm\:text-base {
-  font-size: 0.9rem !important;
-  line-height: 1.6 !important;
-}
-.paper-fontsize-sm .text-lg,
-.paper-fontsize-sm .sm\:text-lg {
-  font-size: 1.025rem !important;
-  line-height: 1.5 !important;
-}
-.paper-fontsize-sm .text-xl,
-.paper-fontsize-sm .sm\:text-xl {
-  font-size: 1.15rem !important;
-  line-height: 1.4 !important;
-}
-.paper-fontsize-sm .text-2xl,
-.paper-fontsize-sm .sm\:text-2xl {
-  font-size: 1.35rem !important;
-  line-height: 1.35 !important;
-}
-.paper-fontsize-sm .text-3xl,
-.paper-fontsize-sm .sm\:text-3xl {
-  font-size: 1.55rem !important;
-  line-height: 1.3 !important;
-}
-
-.paper-fontsize-lg .text-\[10px\],
-.paper-fontsize-lg .text-\[11px\] {
-  font-size: 0.825rem !important;
-  line-height: 1.55 !important;
-}
-.paper-fontsize-lg .text-xs,
-.paper-fontsize-lg .sm\:text-xs {
-  font-size: 0.925rem !important;
-  line-height: 1.7 !important;
-}
-.paper-fontsize-lg .text-sm,
-.paper-fontsize-lg .sm\:text-sm {
-  font-size: 1.075rem !important;
-  line-height: 1.8 !important;
-}
-.paper-fontsize-lg .text-base,
-.paper-fontsize-lg .sm\:text-base {
-  font-size: 1.225rem !important;
-  line-height: 1.85 !important;
-}
-.paper-fontsize-lg .text-lg,
-.paper-fontsize-lg .sm\:text-lg {
-  font-size: 1.4rem !important;
-  line-height: 1.6 !important;
-}
-.paper-fontsize-lg .text-xl,
-.paper-fontsize-lg .sm\:text-xl {
-  font-size: 1.6rem !important;
-  line-height: 1.45 !important;
-}
-.paper-fontsize-lg .text-2xl,
-.paper-fontsize-lg .sm\:text-2xl {
-  font-size: 1.9rem !important;
-  line-height: 1.35 !important;
-}
-.paper-fontsize-lg .text-3xl,
-.paper-fontsize-lg .sm\:text-3xl {
-  font-size: 2.2rem !important;
-  line-height: 1.25 !important;
-}
-
-/* =========================================================================
-   Light Mode (亮色学术纸张护眼主题) Adaptive Overrides
-   Ensures all existing & future paper modules automatically support dual themes
-   ========================================================================= */
-
-html[data-theme="light"] body,
-html[data-theme="light"] .bg-slate-950 {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-}
-
-html[data-theme="light"] .bg-slate-950\/80,
-html[data-theme="light"] .bg-slate-950\/60 {
-  background-color: #f1f5f9 !important;
-}
-
-html[data-theme="light"] .bg-slate-900,
-html[data-theme="light"] .bg-slate-900\/90,
-html[data-theme="light"] .bg-slate-900\/80,
-html[data-theme="light"] .bg-slate-900\/60,
-html[data-theme="light"] .bg-slate-900\/40 {
-  background-color: #ffffff !important;
-}
-
-html[data-theme="light"] header.bg-slate-900\/90 {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  border-color: #e2e8f0 !important;
-}
-
-html[data-theme="light"] .bg-slate-800,
-html[data-theme="light"] .bg-slate-800\/80,
-html[data-theme="light"] .bg-slate-800\/60,
-html[data-theme="light"] .bg-slate-800\/40 {
-  background-color: #f1f5f9 !important;
-}
-
-html[data-theme="light"] .bg-slate-700,
-html[data-theme="light"] .bg-slate-700\/80,
-html[data-theme="light"] .bg-slate-700\/60 {
-  background-color: #cbd5e1 !important;
-}
-
-html[data-theme="light"] .h-1\.5.bg-slate-800,
-html[data-theme="light"] .h-2.bg-slate-800 {
-  background-color: #e2e8f0 !important;
-}
-
-html[data-theme="light"] .bg-slate-600 {
-  background-color: #94a3b8 !important;
-}
-
-html[data-theme="light"] .hover\:bg-slate-800:hover,
-html[data-theme="light"] .hover\:bg-slate-800\/60:hover,
-html[data-theme="light"] .hover\:bg-slate-700:hover {
-  background-color: #e2e8f0 !important;
-}
-
-/* Hero & Card Gradients in Light Mode */
-html[data-theme="light"] .from-slate-900 {
-  --tw-gradient-from: #ffffff !important;
-  --tw-gradient-via: #f8fafc !important;
-  --tw-gradient-to: #ecfdf5 !important;
-  background-image: linear-gradient(to bottom right, #ffffff, #f8fafc, #ecfdf5) !important;
-}
-
-html[data-theme="light"] .to-slate-900 {
-  --tw-gradient-to: #ffffff !important;
-}
-
-html[data-theme="light"] .from-emerald-950\/40 {
-  --tw-gradient-from: #ecfdf5 !important;
-  background-image: linear-gradient(to bottom right, #ecfdf5, #ffffff) !important;
-}
-
-html[data-theme="light"] .from-teal-950\/40 {
-  --tw-gradient-from: #f0fdfa !important;
-  background-image: linear-gradient(to bottom right, #f0fdfa, #ffffff) !important;
-}
-
-/* Callout & Semantic Tints in Light Mode */
-html[data-theme="light"] .bg-emerald-950\/40,
-html[data-theme="light"] .bg-emerald-950\/30,
-html[data-theme="light"] .bg-emerald-950\/20,
-html[data-theme="light"] .bg-emerald-500\/10,
-html[data-theme="light"] .bg-emerald-500\/15,
-html[data-theme="light"] .bg-emerald-500\/20 {
-  background-color: #ecfdf5 !important;
-}
-
-html[data-theme="light"] .bg-teal-950\/40,
-html[data-theme="light"] .bg-teal-950\/20,
-html[data-theme="light"] .bg-teal-500\/15 {
-  background-color: #f0fdfa !important;
-}
-
-html[data-theme="light"] .bg-amber-950\/30,
-html[data-theme="light"] .bg-amber-950\/20,
-html[data-theme="light"] .bg-amber-950\/15,
-html[data-theme="light"] .bg-amber-500\/20 {
-  background-color: #fffbeb !important;
-}
-
-html[data-theme="light"] .bg-red-950\/40,
-html[data-theme="light"] .bg-red-950\/20 {
-  background-color: #fef2f2 !important;
-}
-
-/* Borders in Light Mode */
-html[data-theme="light"] .border-slate-800,
-html[data-theme="light"] .border-slate-800\/80,
-html[data-theme="light"] .border-slate-800\/60,
-html[data-theme="light"] .border-slate-800\/40,
-html[data-theme="light"] .border-slate-700,
-html[data-theme="light"] .border-slate-700\/80,
-html[data-theme="light"] .border-slate-700\/60 {
-  border-color: #cbd5e1 !important;
-}
-
-html[data-theme="light"] .divide-slate-800 > :not(:last-child),
-html[data-theme="light"] .divide-slate-800\/60 > :not(:last-child) {
-  border-color: #e2e8f0 !important;
-}
-
-html[data-theme="light"] .border-amber-950,
-html[data-theme="light"] .border-amber-900\/30,
-html[data-theme="light"] .border-amber-800\/30 {
-  border-color: #fcd34d !important;
-}
-
-html[data-theme="light"] .border-emerald-900\/30,
-html[data-theme="light"] .border-emerald-900\/40,
-html[data-theme="light"] .border-emerald-800\/30,
-html[data-theme="light"] .border-emerald-800\/40,
-html[data-theme="light"] .border-emerald-500\/20,
-html[data-theme="light"] .border-emerald-500\/30,
-html[data-theme="light"] .border-emerald-500\/40 {
-  border-color: #6ee7b7 !important;
-}
-
-html[data-theme="light"] .border-teal-900\/30,
-html[data-theme="light"] .border-teal-500\/30 {
-  border-color: #5eead4 !important;
-}
-
-html[data-theme="light"] .border-red-900\/30 {
-  border-color: #fca5a5 !important;
-}
-
-/* Typography Contrast in Light Mode */
-html[data-theme="light"] .text-white,
-html[data-theme="light"] .text-slate-100,
-html[data-theme="light"] .text-slate-200 {
-  color: #0f172a !important;
-}
-
-/* Preserve white icon/text inside solid accent badges */
-html[data-theme="light"] .from-emerald-500 .text-white,
-html[data-theme="light"] .bg-emerald-500 .text-white,
-html[data-theme="light"] .bg-emerald-600 .text-white {
-  color: #ffffff !important;
-}
-
-html[data-theme="light"] .bg-emerald-500.text-slate-950,
-html[data-theme="light"] .bg-emerald-600.text-slate-950,
-html[data-theme="light"] .bg-teal-600.text-slate-950 {
-  color: #022c22 !important;
-}
-
-html[data-theme="light"] .text-slate-300 {
-  color: #1e293b !important;
-}
-
-html[data-theme="light"] .text-slate-400 {
-  color: #475569 !important;
-}
-
-html[data-theme="light"] .text-slate-500,
-html[data-theme="light"] .text-slate-600 {
-  color: #64748b !important;
-}
-
-html[data-theme="light"] .text-emerald-400,
-html[data-theme="light"] .text-emerald-300,
-html[data-theme="light"] .text-emerald-200,
-html[data-theme="light"] .text-emerald-200\/90,
-html[data-theme="light"] .text-emerald-200\/80,
-html[data-theme="light"] .text-emerald-300\/90 {
-  color: #047857 !important;
-}
-
-html[data-theme="light"] .text-teal-400,
-html[data-theme="light"] .text-teal-300,
-html[data-theme="light"] .text-teal-300\/90 {
-  color: #0f766e !important;
-}
-
-html[data-theme="light"] .text-amber-400,
-html[data-theme="light"] .text-amber-300,
-html[data-theme="light"] .text-amber-200,
-html[data-theme="light"] .text-amber-200\/90,
-html[data-theme="light"] .text-amber-300\/90,
-html[data-theme="light"] .text-amber-100\/90 {
-  color: #b45309 !important;
-}
-
-html[data-theme="light"] .text-red-400,
-html[data-theme="light"] .text-red-300 {
-  color: #dc2626 !important;
-}
-
-/* Shadows in Light Mode */
-html[data-theme="light"] .shadow-xl,
-html[data-theme="light"] .shadow-2xl,
-html[data-theme="light"] .shadow-lg {
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.15s ease;
 }

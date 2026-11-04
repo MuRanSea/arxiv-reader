@@ -56,29 +56,21 @@
 └── papers/                                                 # 📚 论文独立模块仓库 (One Paper, One Folder)
     ├── registry.ts                                         # 📋 全局论文注册表 (集中登记所有论文元数据与组件入口)
     │
-    ├── Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/  # 📁 [已上线] 论文 01: DecisionRAG
-    │   ├── README.md                                       # 📄 该论文专属中文深度解析文档
-    │   ├── index.html                                      # 🌐 该论文独立入口页
-    │   ├── package.json                                    # 📦 该论文独立包描述文件
-    │   └── src/                                            # 💻 该论文完整交互系统源码
-    │       ├── App.tsx                                     # 论文内部主视图控制器
-    │       ├── components/                                 # 五大交互模块组件
-    │       │   ├── Header.tsx                              # 论文顶栏 (含返回大厅、导航Tab、语种、字号、主题切换)
-    │       │   ├── BeginnerGuide.tsx                       # 模块1：5分钟通俗图文导览与互动自测问答
-    │       │   ├── PaperReader.tsx                         # 模块2：全文7大章节精读 (中文/双语/英文 + 白话拆解)
-    │       │   ├── NavigationSimulator.tsx                 # 模块3：DecisionRAG 分层决策树导航在线实验台
-    │       │   ├── ComparisonMatrix.tsx                    # 模块4：五大检索范式与四大 Benchmark 对比矩阵
-    │       │   └── GlossaryView.tsx                        # 模块5：核心概念双解词典 (生活比喻 + 严谨定义)
-    │       ├── data/                                       # 结构化学术数据集
-    │       │   ├── paperContent.ts                         # 论文完整中英对照译文、公式与要点
-    │       │   ├── mockTreeCorpus.ts                       # 维基百科、IBM Cloud、政府政策三级模拟语料树
-    │       │   └── glossary.ts                             # 11+ 核心学术概念双解词库
-    │       └── utils/                                      # 纯算法逻辑与单元测试
-    │           ├── treeNavigation.ts                       # 单步前向传播 Logit 打分、Softmax 与 Beam Search 引擎
-    │           └── treeNavigation.test.ts                  # Node.js 原生单元测试套件
+    ├── Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/               # 📁 [已上线] 论文 01: DecisionRAG (arXiv:2610.35868)
+    │   ├── README.md                                       # 📄 DecisionRAG 中文深度解析文档
+    │   └── src/                                            # 💻 分层决策树导航实验台与完整双语译本
     │
-    ├── GraphRAG-Unifying-Retrieval-and-Knowledge-Graphs/   # 📁 [规划中] 论文 02: GraphRAG
-    └── Self-RAG-Learning-to-Retrieve-Generate-and-Critique/# 📁 [规划中] 论文 03: Self-RAG
+    ├── Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks/                 # 📁 [已上线] 论文 02: RAG 奠基论文 (NeurIPS 2020, arXiv:2005.11401)
+    │   ├── README.md                                       # 📄 RAG 奠基论文专属中文解析文档
+    │   └── src/                                            # 💻 RAG-Sequence / RAG-Token 概率边缘化与索引热插拔实验台
+    │
+    ├── Dense-Passage-Retrieval-for-Open-Domain-Question-Answering/                       # 📁 [已上线] 论文 03: DPR 稠密向量检索论文 (EMNLP 2020, arXiv:2004.04906)
+    │   ├── README.md                                       # 📄 DPR 专属中文解析文档
+    │   └── src/                                            # 💻 双编码器对比学习、批内负样本与 BM25 困难负样本矩阵实验台
+    │
+    └── ColBERT-Efficient-and-Effective-Passage-Search-via-Contextualized-Late-Interaction-over-BERT/ # 📁 [已上线] 论文 04: ColBERT 延迟交互论文 (SIGIR 2020, arXiv:2004.12832)
+        ├── README.md                                       # 📄 ColBERT 专属中文解析文档
+        └── src/                                            # 💻 词元级延迟交互、MaxSim 矩阵与 [MASK] 查询软扩展实验台
 ```
 
 ---

@@ -54,7 +54,7 @@ export default function App({ onBackToHub, initialView = 'beginner' }: AppProps 
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Top Navigation */}
       <Header
         currentView={currentView}
