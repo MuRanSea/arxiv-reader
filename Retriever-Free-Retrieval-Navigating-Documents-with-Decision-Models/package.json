@@ -1,0 +1,22 @@
+{
+  "name": "retriever-free-retrieval-navigating-documents-with-decision-models",
+  "version": "1.0.0",
+  "description": "arXiv:2610.35868《Retriever-Free Retrieval: Navigating Documents with Decision Models》全文中文翻译、深度概念详解与分层决策交互模拟系统",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "tsx --test src/utils/treeNavigation.test.ts"
+  },
+  "keywords": [
+    "DecisionRAG",
+    "RAG",
+    "Information-Retrieval",
+    "Cornell-University",
+    "Zero-Token",
+    "Beam-Search",
+    "arxiv-2610-35868"
+  ],
+  "author": "Cornell University & ASAPP Research (Paper Authors), Paper Translation & Interactive Platform",
+  "license": "Apache-2.0"
+}
