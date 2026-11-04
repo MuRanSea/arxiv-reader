@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PaperHub } from './portal/PaperHub.js';
-import DecisionRagApp from '../papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/src/App.js';
-import { ViewMode } from '../papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/src/components/Header.js';
+import { REGISTERED_PAPERS } from '../papers/registry.js';
+import { ThemeProvider } from './shared/theme/ThemeContext.js';
 
 export default function App() {
   const [activePaperId, setActivePaperId] = useState<string | null>(null);
-  const [initialView, setInitialView] = useState<ViewMode>('beginner');
+  const [initialView, setInitialView] = useState<string>('beginner');
 
-  // Handle URL hash changes for easy routing and browser history
+  // Handle URL hash routing for deep-linking and browser history
   useEffect(() => {
     const parseHash = () => {
       const hash = window.location.hash;
@@ -15,7 +15,7 @@ export default function App() {
         const parts = hash.replace('#/paper/', '').split('?');
         const paperId = parts[0];
         const params = new URLSearchParams(parts[1] || '');
-        const view = (params.get('view') as ViewMode) || 'beginner';
+        const view = params.get('view') || 'beginner';
         setActivePaperId(paperId);
         setInitialView(view);
       } else if (hash.includes('decisionrag')) {
@@ -32,7 +32,7 @@ export default function App() {
 
   const handleSelectPaper = (paperId: string, view: string = 'beginner') => {
     setActivePaperId(paperId);
-    setInitialView(view as ViewMode);
+    setInitialView(view);
     window.location.hash = `#/paper/${paperId}?view=${view}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -43,16 +43,26 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (activePaperId === 'decisionrag') {
-    return (
-      <DecisionRagApp
-        onBackToHub={handleBackToHub}
-        initialView={initialView}
-      />
+  // Dynamically resolve the active paper module from the registry
+  const activePaper = useMemo(() => {
+    if (!activePaperId) return null;
+    return REGISTERED_PAPERS.find(
+      (p) => (p.id === activePaperId || p.folderName === activePaperId) && p.status === 'active'
     );
-  }
+  }, [activePaperId]);
+
+  const ActivePaperComponent = activePaper?.component;
 
   return (
-    <PaperHub onSelectPaper={handleSelectPaper} />
+    <ThemeProvider>
+      {ActivePaperComponent ? (
+        <ActivePaperComponent
+          onBackToHub={handleBackToHub}
+          initialView={initialView}
+        />
+      ) : (
+        <PaperHub onSelectPaper={handleSelectPaper} />
+      )}
+    </ThemeProvider>
   );
 }

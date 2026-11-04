@@ -1,1 +1,346 @@
 @import "tailwindcss";
+
+:root,
+html[data-theme="dark"] {
+  --app-bg: #020617;
+  --app-surface: #0f172a;
+  --app-surface-elevated: #1e293b;
+  --app-border: #1e293b;
+  --app-text: #f8fafc;
+  --app-text-muted: #94a3b8;
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-elevated: #f1f5f9;
+  --app-border: #e2e8f0;
+  --app-text: #0f172a;
+  --app-text-muted: #475569;
+  color-scheme: light;
+}
+
+/* Smooth theme & font-size transitions */
+body,
+header,
+footer,
+main,
+section,
+article,
+aside,
+div,
+button,
+input,
+select,
+table,
+tr,
+td,
+th {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
+/* =========================================================================
+   Global Font Size Scaling System (小 / 中 / 大)
+   Applies across all 5 views inside a paper module (Guide, Reader, Simulator,
+   Comparison, Glossary) so changing font size always gives immediate feedback.
+   ========================================================================= */
+
+.paper-fontsize-sm .text-\[10px\],
+.paper-fontsize-sm .text-\[11px\] {
+  font-size: 0.65rem !important;
+  line-height: 1.4 !important;
+}
+.paper-fontsize-sm .text-xs,
+.paper-fontsize-sm .sm\:text-xs {
+  font-size: 0.72rem !important;
+  line-height: 1.45 !important;
+}
+.paper-fontsize-sm .text-sm,
+.paper-fontsize-sm .sm\:text-sm {
+  font-size: 0.8125rem !important;
+  line-height: 1.55 !important;
+}
+.paper-fontsize-sm .text-base,
+.paper-fontsize-sm .sm\:text-base {
+  font-size: 0.9rem !important;
+  line-height: 1.6 !important;
+}
+.paper-fontsize-sm .text-lg,
+.paper-fontsize-sm .sm\:text-lg {
+  font-size: 1.025rem !important;
+  line-height: 1.5 !important;
+}
+.paper-fontsize-sm .text-xl,
+.paper-fontsize-sm .sm\:text-xl {
+  font-size: 1.15rem !important;
+  line-height: 1.4 !important;
+}
+.paper-fontsize-sm .text-2xl,
+.paper-fontsize-sm .sm\:text-2xl {
+  font-size: 1.35rem !important;
+  line-height: 1.35 !important;
+}
+.paper-fontsize-sm .text-3xl,
+.paper-fontsize-sm .sm\:text-3xl {
+  font-size: 1.55rem !important;
+  line-height: 1.3 !important;
+}
+
+.paper-fontsize-lg .text-\[10px\],
+.paper-fontsize-lg .text-\[11px\] {
+  font-size: 0.825rem !important;
+  line-height: 1.55 !important;
+}
+.paper-fontsize-lg .text-xs,
+.paper-fontsize-lg .sm\:text-xs {
+  font-size: 0.925rem !important;
+  line-height: 1.7 !important;
+}
+.paper-fontsize-lg .text-sm,
+.paper-fontsize-lg .sm\:text-sm {
+  font-size: 1.075rem !important;
+  line-height: 1.8 !important;
+}
+.paper-fontsize-lg .text-base,
+.paper-fontsize-lg .sm\:text-base {
+  font-size: 1.225rem !important;
+  line-height: 1.85 !important;
+}
+.paper-fontsize-lg .text-lg,
+.paper-fontsize-lg .sm\:text-lg {
+  font-size: 1.4rem !important;
+  line-height: 1.6 !important;
+}
+.paper-fontsize-lg .text-xl,
+.paper-fontsize-lg .sm\:text-xl {
+  font-size: 1.6rem !important;
+  line-height: 1.45 !important;
+}
+.paper-fontsize-lg .text-2xl,
+.paper-fontsize-lg .sm\:text-2xl {
+  font-size: 1.9rem !important;
+  line-height: 1.35 !important;
+}
+.paper-fontsize-lg .text-3xl,
+.paper-fontsize-lg .sm\:text-3xl {
+  font-size: 2.2rem !important;
+  line-height: 1.25 !important;
+}
+
+/* =========================================================================
+   Light Mode (亮色学术纸张护眼主题) Adaptive Overrides
+   Ensures all existing & future paper modules automatically support dual themes
+   ========================================================================= */
+
+html[data-theme="light"] body,
+html[data-theme="light"] .bg-slate-950 {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .bg-slate-950\/80,
+html[data-theme="light"] .bg-slate-950\/60 {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme="light"] .bg-slate-900,
+html[data-theme="light"] .bg-slate-900\/90,
+html[data-theme="light"] .bg-slate-900\/80,
+html[data-theme="light"] .bg-slate-900\/60,
+html[data-theme="light"] .bg-slate-900\/40 {
+  background-color: #ffffff !important;
+}
+
+html[data-theme="light"] header.bg-slate-900\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme="light"] .bg-slate-800,
+html[data-theme="light"] .bg-slate-800\/80,
+html[data-theme="light"] .bg-slate-800\/60,
+html[data-theme="light"] .bg-slate-800\/40 {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme="light"] .bg-slate-700,
+html[data-theme="light"] .bg-slate-700\/80,
+html[data-theme="light"] .bg-slate-700\/60 {
+  background-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .h-1\.5.bg-slate-800,
+html[data-theme="light"] .h-2.bg-slate-800 {
+  background-color: #e2e8f0 !important;
+}
+
+html[data-theme="light"] .bg-slate-600 {
+  background-color: #94a3b8 !important;
+}
+
+html[data-theme="light"] .hover\:bg-slate-800:hover,
+html[data-theme="light"] .hover\:bg-slate-800\/60:hover,
+html[data-theme="light"] .hover\:bg-slate-700:hover {
+  background-color: #e2e8f0 !important;
+}
+
+/* Hero & Card Gradients in Light Mode */
+html[data-theme="light"] .from-slate-900 {
+  --tw-gradient-from: #ffffff !important;
+  --tw-gradient-via: #f8fafc !important;
+  --tw-gradient-to: #ecfdf5 !important;
+  background-image: linear-gradient(to bottom right, #ffffff, #f8fafc, #ecfdf5) !important;
+}
+
+html[data-theme="light"] .to-slate-900 {
+  --tw-gradient-to: #ffffff !important;
+}
+
+html[data-theme="light"] .from-emerald-950\/40 {
+  --tw-gradient-from: #ecfdf5 !important;
+  background-image: linear-gradient(to bottom right, #ecfdf5, #ffffff) !important;
+}
+
+html[data-theme="light"] .from-teal-950\/40 {
+  --tw-gradient-from: #f0fdfa !important;
+  background-image: linear-gradient(to bottom right, #f0fdfa, #ffffff) !important;
+}
+
+/* Callout & Semantic Tints in Light Mode */
+html[data-theme="light"] .bg-emerald-950\/40,
+html[data-theme="light"] .bg-emerald-950\/30,
+html[data-theme="light"] .bg-emerald-950\/20,
+html[data-theme="light"] .bg-emerald-500\/10,
+html[data-theme="light"] .bg-emerald-500\/15,
+html[data-theme="light"] .bg-emerald-500\/20 {
+  background-color: #ecfdf5 !important;
+}
+
+html[data-theme="light"] .bg-teal-950\/40,
+html[data-theme="light"] .bg-teal-950\/20,
+html[data-theme="light"] .bg-teal-500\/15 {
+  background-color: #f0fdfa !important;
+}
+
+html[data-theme="light"] .bg-amber-950\/30,
+html[data-theme="light"] .bg-amber-950\/20,
+html[data-theme="light"] .bg-amber-950\/15,
+html[data-theme="light"] .bg-amber-500\/20 {
+  background-color: #fffbeb !important;
+}
+
+html[data-theme="light"] .bg-red-950\/40,
+html[data-theme="light"] .bg-red-950\/20 {
+  background-color: #fef2f2 !important;
+}
+
+/* Borders in Light Mode */
+html[data-theme="light"] .border-slate-800,
+html[data-theme="light"] .border-slate-800\/80,
+html[data-theme="light"] .border-slate-800\/60,
+html[data-theme="light"] .border-slate-800\/40,
+html[data-theme="light"] .border-slate-700,
+html[data-theme="light"] .border-slate-700\/80,
+html[data-theme="light"] .border-slate-700\/60 {
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .divide-slate-800 > :not(:last-child),
+html[data-theme="light"] .divide-slate-800\/60 > :not(:last-child) {
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme="light"] .border-amber-950,
+html[data-theme="light"] .border-amber-900\/30,
+html[data-theme="light"] .border-amber-800\/30 {
+  border-color: #fcd34d !important;
+}
+
+html[data-theme="light"] .border-emerald-900\/30,
+html[data-theme="light"] .border-emerald-900\/40,
+html[data-theme="light"] .border-emerald-800\/30,
+html[data-theme="light"] .border-emerald-800\/40,
+html[data-theme="light"] .border-emerald-500\/20,
+html[data-theme="light"] .border-emerald-500\/30,
+html[data-theme="light"] .border-emerald-500\/40 {
+  border-color: #6ee7b7 !important;
+}
+
+html[data-theme="light"] .border-teal-900\/30,
+html[data-theme="light"] .border-teal-500\/30 {
+  border-color: #5eead4 !important;
+}
+
+html[data-theme="light"] .border-red-900\/30 {
+  border-color: #fca5a5 !important;
+}
+
+/* Typography Contrast in Light Mode */
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200 {
+  color: #0f172a !important;
+}
+
+/* Preserve white icon/text inside solid accent badges */
+html[data-theme="light"] .from-emerald-500 .text-white,
+html[data-theme="light"] .bg-emerald-500 .text-white,
+html[data-theme="light"] .bg-emerald-600 .text-white {
+  color: #ffffff !important;
+}
+
+html[data-theme="light"] .bg-emerald-500.text-slate-950,
+html[data-theme="light"] .bg-emerald-600.text-slate-950,
+html[data-theme="light"] .bg-teal-600.text-slate-950 {
+  color: #022c22 !important;
+}
+
+html[data-theme="light"] .text-slate-300 {
+  color: #1e293b !important;
+}
+
+html[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .text-slate-500,
+html[data-theme="light"] .text-slate-600 {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] .text-emerald-400,
+html[data-theme="light"] .text-emerald-300,
+html[data-theme="light"] .text-emerald-200,
+html[data-theme="light"] .text-emerald-200\/90,
+html[data-theme="light"] .text-emerald-200\/80,
+html[data-theme="light"] .text-emerald-300\/90 {
+  color: #047857 !important;
+}
+
+html[data-theme="light"] .text-teal-400,
+html[data-theme="light"] .text-teal-300,
+html[data-theme="light"] .text-teal-300\/90 {
+  color: #0f766e !important;
+}
+
+html[data-theme="light"] .text-amber-400,
+html[data-theme="light"] .text-amber-300,
+html[data-theme="light"] .text-amber-200,
+html[data-theme="light"] .text-amber-200\/90,
+html[data-theme="light"] .text-amber-300\/90,
+html[data-theme="light"] .text-amber-100\/90 {
+  color: #b45309 !important;
+}
+
+html[data-theme="light"] .text-red-400,
+html[data-theme="light"] .text-red-300 {
+  color: #dc2626 !important;
+}
+
+/* Shadows in Light Mode */
+html[data-theme="light"] .shadow-xl,
+html[data-theme="light"] .shadow-2xl,
+html[data-theme="light"] .shadow-lg {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+}

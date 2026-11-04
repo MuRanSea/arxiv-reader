@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header, ViewMode, LangMode } from './components/Header.js';
 import { BeginnerGuide } from './components/BeginnerGuide.js';
 import { PaperReader } from './components/PaperReader.js';
@@ -6,19 +6,38 @@ import { NavigationSimulator } from './components/NavigationSimulator.js';
 import { ComparisonMatrix } from './components/ComparisonMatrix.js';
 import { GlossaryView } from './components/GlossaryView.js';
 import { PAPER_META } from './data/paperContent.js';
-import { BookOpen, Copy, Check, ArrowUpRight } from 'lucide-react';
+import { Copy, Check, ArrowUpRight } from 'lucide-react';
 
 interface AppProps {
   onBackToHub?: () => void;
-  initialView?: ViewMode;
+  initialView?: ViewMode | string;
 }
 
 export default function App({ onBackToHub, initialView = 'beginner' }: AppProps = {}) {
-  const [currentView, setCurrentView] = useState<ViewMode>(initialView);
+  const [currentView, setCurrentView] = useState<ViewMode>((initialView as ViewMode) || 'beginner');
   const [langMode, setLangMode] = useState<LangMode>('zh');
-  const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
+  const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = window.localStorage.getItem('ai-paper-lab-fontsize');
+      if (saved === 'sm' || saved === 'md' || saved === 'lg') return saved;
+    }
+    return 'md';
+  });
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedBibtex, setCopiedBibtex] = useState<boolean>(false);
+
+  const handleFontSizeChange = (size: 'sm' | 'md' | 'lg') => {
+    setFontSize(size);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('ai-paper-lab-fontsize', size);
+    }
+  };
+
+  useEffect(() => {
+    if (initialView) {
+      setCurrentView(initialView as ViewMode);
+    }
+  }, [initialView]);
 
   const bibtex = `@article{wan2026decisionrag,
   title={Retriever-Free Retrieval: Navigating Documents with Decision Models},
@@ -45,12 +64,12 @@ export default function App({ onBackToHub, initialView = 'beginner' }: AppProps 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         fontSize={fontSize}
-        onFontSizeChange={setFontSize}
+        onFontSizeChange={handleFontSizeChange}
         onBackToHub={onBackToHub}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1">
+      {/* Main Content Area (scales dynamically with fontSize across all views) */}
+      <div className={`flex-1 paper-fontsize-${fontSize}`} data-fontsize={fontSize}>
         {currentView === 'beginner' && (
           <BeginnerGuide
             onGoToSimulator={() => setCurrentView('simulator')}

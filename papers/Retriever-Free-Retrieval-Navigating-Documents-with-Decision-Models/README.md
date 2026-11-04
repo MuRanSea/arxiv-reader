@@ -1,93 +1,84 @@
-# 《Retriever-Free Retrieval: Navigating Documents with Decision Models》
+# 📘 《Retriever-Free Retrieval: Navigating Documents with Decision Models》
 ## 免检索器的检索架构：利用决策模型在文档层级树中智能导航 (DecisionRAG)
 
+> **所属平台**：[AI Paper Lab 论文探索大厅](../../README.md)  
 > **论文编号**：arXiv:2610.35868  
 > **论文 DOI**：[https://doi.org/10.48550/arXiv.2610.35868](https://doi.org/10.48550/arXiv.2610.35868)  
 > **研究机构**：康奈尔大学 (Cornell University) & ASAPP Research  
-> **作者**：Chao Wan (万超), Paul Jünger, Beixi Du (杜北希), Bodong Liu (刘博东), Navaneetha Krishnan, Kilian Q. Weinberger  
-> **代码仓库**：[https://github.com/decisionrag/decision-rag](https://github.com/decisionrag/decision-rag)
+> **作者团队**：Chao Wan (万超), Paul Jünger, Beixi Du (杜北希), Bodong Liu (刘博东), Navaneetha Krishnan, Kilian Q. Weinberger  
+> **开源仓库**：[https://github.com/decisionrag/decision-rag](https://github.com/decisionrag/decision-rag)
 
 ---
 
-### 📖 项目简介与背景
+## 🎯 一句话核心总结 (TL;DR)
 
-本项目是对 2026 年康奈尔大学与 ASAPP 联合发表的重磅 RAG 领域突破论文 **DecisionRAG** 的全中文精读、概念拆解与交互式探索系统。
-
-在传统检索增强生成（RAG）系统中，存在一个致命缺陷——**『检索能力不对称性（The Retrieval Capability Asymmetry）』**：
-- 下游的大语言模型（LLM）推理与理解能力日益强大，但上游的第一阶段检索器（如 BM25 词频统计或双编码器 Bi-Encoder 向量数据库）却非常脆弱。
-- 向量数据库强行将数百字的内容压缩为一个固定维度的低维向量，在面对复杂约束、否定句或冷门术语时极易算错距离。
-- **一旦上游检索器在第一阶段漏掉了正确文档，下游无论多么聪明的大模型也彻底无法恢复信息，只能被迫瞎编产生幻觉。**
-
-**DecisionRAG 提出了颠覆性的全新范式：彻底抛弃传统第一阶段向量检索器（Retriever-Free）！**  
-它将语料库按照人类知识的天然层级（领域 ➔ 文档 ➔ 章节 ➔ 段落）组织成一棵树，直接让预训练大语言模型像人类图书管理员一样，在树中沿着最有潜力的分支智能导航。
+**DecisionRAG 彻底终结了“先用向量数据库粗筛 Top-100、再用大模型重排”的传统两阶段 RAG 管线。**  
+它不再将文档切碎压缩成死板的低维向量，而是保留知识的天然层级结构（领域 ➔ 文档 ➔ 章节 ➔ 段落），直接指派预训练大语言模型扮演“图书管理员”，通过**单次前向传播（零 Token 生成）+ 共享上下文横向对比 + 束搜索（Beam Search）**在树中自顶向下导航。在无需特定任务微调的情况下，不仅检索延迟稳定在 **0.7 ~ 1.8 秒**，而且在 MultiDoc2Dial 和 268 万段落的 Natural Questions 上分别以 **+13.8 点 R@1** 和 **+17.4 点 Hit@1** 的优势全面超越“稠密检索 + 8B 交叉重排器”！
 
 ---
 
-### ⚡ 核心技术创新点
+## 🔍 为什么需要 DecisionRAG？（通俗痛点剖析）
 
-1. **免检索器架构 (Retriever-Free)**
-   - 彻底摆脱昂贵且脆弱的向量数据库（Vector DB）、Embedding 嵌入模型与近似最近邻（ANN/HNSW）索引。
-   - 不再让低能力模型做第一步粗筛，直接由高智能的预训练语言模型亲自操盘导航决策。
+### 1. 传统 RAG 的阿喀琉斯之踵：『检索能力不对称性 (Capability Asymmetry)』
+- **现象**：下游负责生成回答的 LLM（如 GPT-4、Llama-3-70B）推理能力突飞猛进，但上游负责找资料的第一阶段检索器仍然停留在词频统计（BM25）或双编码向量余弦距离（Bi-Encoder）。
+- **死结**：将几百字的复杂规则、转折、否定或适用前提强行压缩进一个 768/1024 维的固定向量，必然丢失关键细节。一旦第一阶段检索器漏掉了正确段落（例如排在了第 101 名之外），下游哪怕接入再强大的重排器（Reranker）或生成模型，也**巧妇难为无米之炊**，只能被迫产生幻觉。
+- **生活比喻**：这就好比请了一位诺贝尔医学奖得主主刀高难度手术，却派了一个分不清手术刀和剪刀的学徒去取器械——学徒一旦拿错，名医也无力回天。
 
-2. **单步前向传播零 Token 打分 (Single Forward Pass, Zero-Token)**
-   - 传统的智能体搜索（Agentic Search）需要逐字自回归吐出几百个词的思考过程，单次查询耗时 15 秒以上。
-   - DecisionRAG 把同级选项拼在同一个 Prompt 中，**仅做 1 次神经网络前向计算**，直接读取词表中选项标识符（如 'A', 'B', 'C'）的未归一化对数概率（Logits），**生成 0 个冗余 Token**，几十毫秒即可完成一层决策！
-
-3. **共享上下文横向对比 (Shared-Context Scoring)**
-   - 双编码器（Bi-Encoder）最大的硬伤在于候选文档彼此独立计算内积，互相看不见。
-   - DecisionRAG 将所有竞争分支置于同一个自注意力上下文窗口中，利用 Transformer 全注意力机制进行横向 PK，有效消除打分漂移与假阳性。
-
-4. **束搜索剪枝 (Beam Search Navigation)**
-   - 在树遍历中维护宽度为 $B$（如 $B=2$ 或 $3$）的活跃分支集合，防止单路径贪心因早期偶然歧义而误入死胡同，保证高召回率与容错率。
+### 2. 智能体搜索（Agentic Search）为什么无法替代底层检索？
+- 虽然让 Agent 循环调用搜索工具、逐页阅读并自我反思可以提高准确率，但 Agent 需要逐字自回归生成几百个思考 Token，单次查询往往耗时 **15 秒甚至数分钟**，算力成本与延迟难以承受。
 
 ---
 
-### 📊 权威基准测试战绩
+## ⚡ DecisionRAG 的四大核心技术支柱
 
-在四大严苛基准（包括涵盖 **268 万维基百科段落**的 Natural Questions 开放域大库）上：
-- **MultiDoc2Dial (复杂政府政策问答)**：Top-1 召回率 **Recall@1 飙升至 60.0%**，相比最强的工业组合（Dense + 8B 交叉重排器）提升高达 **+13.8 个百分点**！
-- **Natural Questions (268万段维基全库)**：Top-1 命中率 **Hit@1 跃升至 71.0%**，相比 Dense + 8B Reranker 绝对提升 **+17.4 个百分点**！
-- **检索速度实测**：端到端单次查询耗时稳定在 **0.7 ~ 1.8 秒**，完全满足高并发工业实时交互标准。
-- **零样本开箱即用 (Zero-Shot)**：无需针对任何特定数据集进行微调。
+| 核心支柱 | 传统方案做法 | DecisionRAG 创新机制 | 带来的直接收益 |
+| :--- | :--- | :--- | :--- |
+| **1. 图书馆层级树导航**<br>*(Hierarchical Tree)* | 将所有文章切碎成扁平无序的 512-token 向量块 | 复原“领域 ➔ 文档 ➔ 章节 ➔ 段落”天然目录树或聚类树 | 搜索空间从线性 $\mathcal{O}(N)$ 骤降至对数级 $\mathcal{O}(\log N)$，无需维护庞大向量库 |
+| **2. 单步前向零 Token 打分**<br>*(Zero-Token Forward Pass)* | Agent 需逐字吐出数百个思考 Token（数百次前向传播） | 每层仅做 **1 次前向传播**，直接提取选项字母（A/B/C）的原始 **Logits** | 彻底规避自回归解码开销，268万段落检索仅需 **0.7 ~ 1.8 秒** |
+| **3. 共享上下文横向对比**<br>*(Shared-Context Scoring)* | 双编码器将各文档关在“小黑屋”独立算余弦距离，互不可见 | 同层所有候选分支放入同一注意力窗口，通过全自注意力横向 PK | 消除打分基准漂移，经 Softmax 归一化后各分支概率直接可比 |
+| **4. 束搜索容错剪枝**<br>*(Beam Search Exploration)* | 单路径贪心一旦首层微弱误判即全盘皆输 | 每层保留得分最高的 $B$ 个（如 $B=2, 3$）活跃分支并行下钻 | 大幅提升模糊或跨领域查询下的召回率与鲁棒性 |
 
----
+### 核心打分公式
 
-### 💻 本系统包含的五大交互功能
+在树的每一层，给定用户查询 $q$ 与同级候选分支集合 $\mathcal{C} = \{c_1, c_2, \dots, c_K\}$，模型在单次前向传播中提取各候选标识符 Token 的未归一化对数概率 $z_i$，并通过 Softmax 计算相对胜出概率：
 
-1. **⚡ 5分钟速通导览（初学者友好）**：用通俗的生活化比喻（图书馆借书、医生与学徒、买西瓜等）拆解复杂学术概念，内置即测即练小问答。
-2. **📖 论文全篇精读 & 深度解析**：支持【中文精译】、【双语对照】与【英文原版】自由切换，配有各章白话笔记、数学公式展开与核心学术洞察。
-3. **🔬 分层决策导航实验台（在线模拟器）**：亲自动手输入查询，选择维基百科、IBM Cloud 技术文档或民生政策库，调整束宽（Beam Width），查看单步 Prompt 与 Logit 分数分布。
-4. **📊 五大检索范式与基准全景矩阵**：横向对比 BM25、Dense 向量检索、两阶段 8B 重排器、Agentic 智能体搜索与 DecisionRAG，附真实典型失败用例解剖。
-5. **📚 核心概念与技术术语大典**：提供“白话生活比喻 + 严谨技术定义 + 论文核心突破”三维解析。
+$$P(c_i \mid q, \mathcal{C}) = \frac{\exp(z_i)}{\sum_{j=1}^{K} \exp(z_j)}$$
 
 ---
 
-### 🛠️ 快速启动与本地运行
+## 📊 四大权威基准测试表现
 
-```bash
-# 1. 安装项目依赖
-npm install
-
-# 2. 启动本地开发服务器 (默认端口 3000)
-npm run dev
-
-# 3. 运行纯算法单元测试 (基于 Node.js 官方测试套件)
-npx --yes tsx --test src/utils/treeNavigation.test.ts
-
-# 4. 构建生产包
-npm run build
-```
+| 检索范式 / 模型 | MultiDoc2Dial (R@1) | Natural Questions 268万段 (Hit@1) | 平均查询延迟 | 是否依赖向量索引 | 生成 Token 消耗 |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **BM25 (词法倒排)** | 22.4% | 31.2% | ~0.12s | 否 | 0 |
+| **Dense Bi-Encoder (Contriever/DPR)** | 34.8% | 42.1% | ~0.28s | 是 (高显存/内存) | 0 |
+| **Dense + 8B Cross-Encoder Reranker** | 46.2% | 53.6% | ~2.45s | 是 (向量库+8B重排) | 0 |
+| **Agentic Search (ReAct 多轮生成)** | 49.0% | 58.2% | ~14.8s | 否 | 450+ Tokens |
+| **🌟 DecisionRAG (本文方案)** | **60.0% (+13.8%)** | **71.0% (+17.4%)** | **0.7s ~ 1.8s** | **否 (免向量库)** | **0 Tokens** |
 
 ---
 
-### 📚 学术引用 (BibTeX)
+## 💻 本目录代码结构与五大交互模块
 
-```bibtex
-@article{wan2026decisionrag,
-  title={Retriever-Free Retrieval: Navigating Documents with Decision Models},
-  author={Wan, Chao and J{\\"u}nger, Paul and Du, Beixi and Liu, Bodong and Krishnan, Navaneetha and Weinberger, Kilian Q.},
-  journal={arXiv preprint arXiv:2610.35868},
-  year={2026},
-  doi={10.48550/arXiv.2610.35868}
-}
+```text
+papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/
+├── README.md                         # 本文档：论文核心机理解析与模块说明
+├── index.html                        # 独立入口 HTML
+├── package.json                      # 子模块包描述与测试脚本
+└── src/
+    ├── App.tsx                       # 论文主组件 (支持返回大厅与双套主题切换)
+    ├── components/
+    │   ├── Header.tsx                # 顶部导航栏 (含亮色/暗色模式切换、字号调节、语种切换、搜索框)
+    │   ├── BeginnerGuide.tsx         # [模块1] 5分钟通俗图文导览 + 3道互动自测题
+    │   ├── PaperReader.tsx           # [模块2] 全文7章深度译本 (支持中文/双语对照/英文 + 白话笔记折叠框)
+    │   ├── NavigationSimulator.tsx   # [模块3] 分层决策导航实验台 (可调 Beam Width、检查单步 Prompt 与 Logits)
+    │   ├── ComparisonMatrix.tsx      # [模块4] 五大范式基准对比柱状图 + 真实翻车案例解剖
+    │   └── GlossaryView.tsx          # [模块5] 11个核心术语双解词典 (大白话比喻 + 严谨定义 + 数学公式)
+    ├── data/
+    │   ├── paperContent.ts           # 论文元数据與 7 大章节完整译文
+    │   ├── mockTreeCorpus.ts         # 三套真实场景层级语料树 (维基百科 NQ / IBM Cloud / 政府医保政策)
+    │   └── glossary.ts               # 结构化术语词条数据
+    └── utils/
+        ├── treeNavigation.ts         # 纯函数算法：分支亲和度计算、Softmax 归一化、Beam Search 树遍历
+        └── treeNavigation.test.ts    # 单元测试套件 (验证 Logits、Softmax 与零 Token 树导航准确性)
 ```

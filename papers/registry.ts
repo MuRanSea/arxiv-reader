@@ -1,29 +1,9 @@
-import React from 'react';
+import { PaperRegistryItem } from '../src/shared/types/paper.js';
+import DecisionRagApp from './Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/src/App.js';
 
-export interface PaperItem {
-  id: string;
-  folderName: string;
-  titleZh: string;
-  titleEn: string;
-  arxivId: string;
-  doi: string;
-  authors: string[];
-  affiliations: string[];
-  publishDate: string;
-  category: 'RAG与检索' | '大模型架构' | '智能体与推理' | '知识图谱';
-  tags: string[];
-  status: 'active' | 'coming-soon';
-  tldrZh: string;
-  keyMetrics: {
-    label: string;
-    value: string;
-    highlight?: boolean;
-  }[];
-  features: string[];
-  component?: React.ComponentType<{ onBackToHub: () => void; initialView?: string }>;
-}
+export type PaperItem = PaperRegistryItem;
 
-export const REGISTERED_PAPERS: PaperItem[] = [
+export const REGISTERED_PAPERS: PaperRegistryItem[] = [
   {
     id: 'decisionrag',
     folderName: 'Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models',
@@ -31,6 +11,7 @@ export const REGISTERED_PAPERS: PaperItem[] = [
     titleEn: 'Retriever-Free Retrieval: Navigating Documents with Decision Models',
     arxivId: 'arXiv:2610.35868',
     doi: 'https://doi.org/10.48550/arXiv.2610.35868',
+    githubUrl: 'https://github.com/decisionrag/decision-rag',
     authors: [
       'Chao Wan (万超)',
       'Paul Jünger',
@@ -57,7 +38,8 @@ export const REGISTERED_PAPERS: PaperItem[] = [
       '分层决策导航实验台 (在线试玩)',
       '五大范式基准对比矩阵',
       '概念双解词典 (白话+学术)'
-    ]
+    ],
+    component: DecisionRagApp
   },
   {
     id: 'graphrag',

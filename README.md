@@ -1,181 +1,210 @@
-# AI Paper Lab ｜ 顶级 AI 前沿论文精读与交互探索平台
+# 🏛️ AI Paper Lab ｜ 顶级 AI 论文精读与交互探索平台
 
-> **项目定位**：面向前沿人工智能领域学术论文的沉浸式精读、概念通俗白话拆解与交互式算法实验台平台。  
-> **核心架构理念**：**“主页统一大厅负责路由展示，一个论文一个独立子文件夹（One Paper, One Folder）”**，具备高扩展性与即插即用（Plug-and-Play）特性。
+<div align="center">
+
+**一个论文一个独立文件夹 · 主页统一路由调度 · 亮色/暗色双套学术主题 · 可交互算法实验台**
+
+[![Architecture](https://img.shields.io/badge/Architecture-One%20Paper%20One%20Folder-10b981?style=flat-square)](#)
+[![Theme](https://img.shields.io/badge/Theme-Light%20%26%20Dark%20Mode-f59e0b?style=flat-square)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square)](#)
+[![Tests](https://img.shields.io/badge/Unit%20Tests-Passing-22c55e?style=flat-square)](#)
+
+</div>
 
 ---
 
-## 🏛️ 多论文平台架构设计
+## 🌟 项目愿景与设计理念
 
-为了支持未来不断扩充海量顶级学术论文（涵盖 RAG、大模型架构、知识图谱、智能体 Agent、多模态视觉等各前沿方向），本项目采用模块化解耦架构：
+传统的论文阅读往往受限于静态枯燥的 PDF 文档：初学者面对密集的数学符号和生僻术语望而却步，而资深研究者也缺乏直观验证算法中间状态（如注意力分布、树搜索剪枝、Logits 概率变化）的交互工具。
+
+**AI Paper Lab** 旨在将每一篇改变领域走向的重磅 AI 论文，转化为一套**“可读、可玩、可测、可对比”**的交互式 Web 探索系统：
+
+1. **🎯 零门槛与高保真兼得**：既提供适合初学者的**「5分钟通俗白话导览 + 生活化比喻 + 即测即练小问答」**，又完整保留**「中英双语逐段对照精读 + 严谨数学推导 + 实验基准全表」**，绝不丢失任何学术细节。
+2. **🔬 在线算法实验台（Interactive Simulator）**：将论文的核心算法提炼为纯 TypeScript 引擎，支持在网页端实时输入 Query、调整超参数（如 Beam Width）、单步观察 Prompt 构造与模型打分。
+3. **🌗 亮色 / 暗色双套主题（Dual Theme System）**：
+   - **☀️ 亮色模式（Light Scholarly Paper）**：模拟温暖高对比度的学术纸张质感，适合长时间沉浸式精读与做笔记。
+   - **🌙 暗色模式（Dark Geek Terminal）**：深邃极客暗黑配色，凸显代码终端、数学公式与概率分布图表的层次感。
+   - 支持一键无缝切换并自动记忆用户偏好（`localStorage` 持久化）。
+4. **📦 “一个论文一个文件夹”插件化架构**：主页大厅（`PaperHub`）统一负责论文检索、分类过滤与 Hash 路由分发；每篇论文拥有完全独立的子目录，互不耦合、即插即用。
+
+---
+
+## 📂 项目目录结构与模块职责
 
 ```text
-/                                                           # 根目录 (全局宿主与门户路由)
-├── index.html                                              # 🌐 门户大厅入口 HTML (加载全局路由应用)
-├── vite.config.ts                                          # ⚙️ Vite 全局构建与多路径配置
-├── tsconfig.json                                           # ⚙️ TypeScript 全局路径映射配置
-├── metadata.json                                           # ⚙️ 平台元数据与能力声明
-├── package.json                                            # 📦 平台全局依赖与脚本
-├── src/                                                    # 💻 全局门户代码
-│   ├── App.tsx                                             # 🧭 路由调度器 (URL Hash 驱动切换大厅与各论文)
-│   ├── main.tsx & index.css                                # 🎨 全局样式与挂载入口
-│   └── portal/                                             # 🏛️ 论文大厅页面组件
-│       └── PaperHub.tsx                                    # 论文展示卡片、分类筛选、检索与接入指引
+/                                                           # 仓库根目录 (全局门户与构建宿主)
+├── index.html                                              # 🌐 全局门户入口 HTML
+├── README.md                                               # 📖 平台总览、架构规范与新论文接入指南 (本文档)
+├── package.json                                            # 📦 全局依赖管理与一键脚本 (dev / build / test)
+├── vite.config.ts                                          # ⚙️ Vite 构建配置与路径别名 (@, @papers)
+├── tsconfig.json                                           # ⚙️ TypeScript 严格模式与模块映射
 │
-└── papers/                                                 # 📁 论文核心仓库 (每个论文独立文件夹)
-    ├── registry.ts                                         # 📋 全局论文注册中心 (所有论文元数据与路由登记)
+├── src/                                                    # 💻 全局门户与共享基础设施层
+│   ├── main.tsx                                            # 挂载入口
+│   ├── index.css                                           # 🎨 全局样式表与【亮色/暗色双套主题】自适应引擎
+│   ├── App.tsx                                             # 🧭 动态路由调度器 (根据 URL Hash 动态挂载对应论文模块)
+│   ├── portal/
+│   │   └── PaperHub.tsx                                    # 🏛️ 论文探索大厅 (论文卡片矩阵、分类筛选、全文检索)
+│   └── shared/                                             # 🧩 跨论文共享核心库
+│       ├── types/
+│       │   └── paper.ts                                    # 统一的论文注册表接口与模块 Props 契约
+│       ├── theme/
+│       │   └── ThemeContext.tsx                            # 全局亮色/暗色主题 Context 状态管理与持久化
+│       └── components/
+│           └── ThemeToggle.tsx                             # 通用亮色/暗色主题切换组件
+│
+└── papers/                                                 # 📚 论文独立模块仓库 (One Paper, One Folder)
+    ├── registry.ts                                         # 📋 全局论文注册表 (集中登记所有论文元数据与组件入口)
     │
-    ├── Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/  # 📁 论文01 (DecisionRAG)
+    ├── Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/  # 📁 [已上线] 论文 01: DecisionRAG
     │   ├── README.md                                       # 📄 该论文专属中文深度解析文档
-    │   ├── index.html                                      # 🌐 该论文可脱机独立双击打开的网页
-    │   ├── package.json                                    # 📦 该论文独立配置信息
-    │   └── src/                                            # 💻 该论文交互全套系统源码
-    │       ├── App.tsx                                     # 该论文系统主入口 (带“返回论文大厅”按钮)
-    │       ├── components/                                 # 5 大功能组件 (导览、精读、实验台、对比表、词典)
-    │       ├── data/                                       # 忠实中文全译、语料树预设与术语数据库
-    │       └── utils/                                      # 纯算法仿真引擎与 Node.js 单元测试
+    │   ├── index.html                                      # 🌐 该论文独立入口页
+    │   ├── package.json                                    # 📦 该论文独立包描述文件
+    │   └── src/                                            # 💻 该论文完整交互系统源码
+    │       ├── App.tsx                                     # 论文内部主视图控制器
+    │       ├── components/                                 # 五大交互模块组件
+    │       │   ├── Header.tsx                              # 论文顶栏 (含返回大厅、导航Tab、语种、字号、主题切换)
+    │       │   ├── BeginnerGuide.tsx                       # 模块1：5分钟通俗图文导览与互动自测问答
+    │       │   ├── PaperReader.tsx                         # 模块2：全文7大章节精读 (中文/双语/英文 + 白话拆解)
+    │       │   ├── NavigationSimulator.tsx                 # 模块3：DecisionRAG 分层决策树导航在线实验台
+    │       │   ├── ComparisonMatrix.tsx                    # 模块4：五大检索范式与四大 Benchmark 对比矩阵
+    │       │   └── GlossaryView.tsx                        # 模块5：核心概念双解词典 (生活比喻 + 严谨定义)
+    │       ├── data/                                       # 结构化学术数据集
+    │       │   ├── paperContent.ts                         # 论文完整中英对照译文、公式与要点
+    │       │   ├── mockTreeCorpus.ts                       # 维基百科、IBM Cloud、政府政策三级模拟语料树
+    │       │   └── glossary.ts                             # 11+ 核心学术概念双解词库
+    │       └── utils/                                      # 纯算法逻辑与单元测试
+    │           ├── treeNavigation.ts                       # 单步前向传播 Logit 打分、Softmax 与 Beam Search 引擎
+    │           └── treeNavigation.test.ts                  # Node.js 原生单元测试套件
     │
-    ├── GraphRAG-Unifying-Retrieval-and-Knowledge-Graphs/   # 📁 论文02 (未来扩展示例)
-    └── Tree-of-Thoughts-Deliberate-Problem-Solving/        # 📁 论文03 (未来扩展示例)
+    ├── GraphRAG-Unifying-Retrieval-and-Knowledge-Graphs/   # 📁 [规划中] 论文 02: GraphRAG
+    └── Self-RAG-Learning-to-Retrieve-Generate-and-Critique/# 📁 [规划中] 论文 03: Self-RAG
 ```
 
 ---
 
-## 🚀 如何在本项目中新增一篇新论文？（极简 3 步接入指南）
+## 🔌 如何添加一篇新论文？（3 步标准化接入规范）
 
-想要扩充收录新的 AI 论文，仅需简单的 3 个步骤，完全无需修改既有论文的任何代码：
+得益于**动态注册表路由（Dynamic Registry Routing）**与**全局双主题自适应引擎**，往平台中添加第 2 篇、第 10 篇新论文时，**完全不需要修改根目录路由代码**，只需遵循以下 3 个步骤：
 
-### 步骤 1：在 `papers/` 目录下创建论文专属文件夹
-以论文英文标题命名文件夹（建议使用连字符连接）：
+### 第一步：在 `papers/` 下新建以论文英文标题命名的文件夹
+
 ```bash
-mkdir papers/Your-Paper-Title-Here
+mkdir -p papers/Your-New-Paper-Title/src/{components,data,utils}
 ```
 
-### 步骤 2：在该文件夹内放置论文模块三件套
-- **`README.md`**：撰写该论文的中文精读、核心痛点、创新突破与实验结果分析。
-- **`src/App.tsx`**：实现该论文的交互前端主界面。在组件入参中接收 `onBackToHub?: () => void`，在界面顶部放一个返回按钮：
-  ```tsx
-  export default function App({ onBackToHub }: { onBackToHub?: () => void }) {
-    return (
-      <div>
-        <button onClick={onBackToHub}>🏛️ 返回论文大厅</button>
-        {/* 论文内容与交互组件 */}
-      </div>
-    );
-  }
-  ```
-- **`src/data/` & `src/utils/`**：放置论文中文翻译文本、测试语料库及算法仿真逻辑。
+### 第二步：实现论文内部模块与专属 `README.md`
 
-### 步骤 3：在 `papers/registry.ts` 中注册元数据
-在 `REGISTERED_PAPERS` 数组中添加配置项即可：
-```typescript
-{
-  id: 'your-paper-id',                                // 唯一路由标识 (如 hash: #/paper/your-paper-id)
-  folderName: 'Your-Paper-Title-Here',                // 对应的文件夹名
-  titleZh: '论文中文规范译名',
-  titleEn: 'Original Paper Title in English',
-  arxivId: 'arXiv:XXXX.XXXXX',
-  doi: 'https://doi.org/...',
-  authors: ['Author 1', 'Author 2'],
-  affiliations: ['Institution Name'],
-  publishDate: '2026年XX月',
-  category: 'RAG与检索',                               // 分类标签：RAG与检索 / 大模型架构 / 智能体与推理 / 知识图谱
-  tags: ['核心技术1', '核心技术2'],
-  status: 'active',                                   // active (已上线) 或 coming-soon (规划中)
-  tldrZh: '一句话白话概括该论文解决了什么问题、有哪些突破...',
-  keyMetrics: [
-    { label: '核心指标1', value: '98.5%', highlight: true }
-  ],
-  features: ['5分钟速通导览', '双语对照精读', '算法模拟器']
+在 `papers/Your-New-Paper-Title/src/App.tsx` 中导出默认组件，接收标准 `PaperModuleProps`（包含 `onBackToHub` 回调与 `initialView` 初始子视图）：
+
+```tsx
+import React from 'react';
+import { PaperModuleProps } from '../../../src/shared/types/paper.js';
+import { ThemeToggle } from '../../../src/shared/components/ThemeToggle.js';
+
+export default function YourNewPaperApp({ onBackToHub, initialView }: PaperModuleProps) {
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <header className="p-4 border-b border-slate-800 flex justify-between items-center">
+        <button onClick={onBackToHub}>← 返回大厅</button>
+        <ThemeToggle />
+      </header>
+      {/* 你的论文精读、概念拆解与交互实验台 */}
+    </div>
+  );
 }
 ```
-**完成！** 重新打开主页即可看到自动生成的论文卡片、标签过滤、搜索匹配，点击直接通过动态路由进入该论文的专属交互界面。
+
+> 💡 **主题适配小贴士**：编写新论文组件时，只需使用标准 Tailwind 类名（如 `bg-slate-950`、`bg-slate-900`、`text-white`、`text-slate-300`、`border-slate-800`），根目录的 `src/index.css` 主题引擎会自动将其无缝映射为**亮色/暗色两套高对比度配色**！
+
+### 第三步：在 `papers/registry.ts` 中注册登记
+
+打开 `papers/registry.ts`，导入你的论文组件并在 `REGISTERED_PAPERS` 数组中添加一条记录：
+
+```typescript
+import YourNewPaperApp from './Your-New-Paper-Title/src/App.js';
+
+// 在 REGISTERED_PAPERS 数组末尾追加：
+{
+  id: 'your-paper-slug',
+  folderName: 'Your-New-Paper-Title',
+  titleZh: '论文中文完整译名',
+  titleEn: 'Original English Paper Title',
+  arxivId: 'arXiv:26XX.XXXXX',
+  doi: 'https://doi.org/10.48550/arXiv.26XX.XXXXX',
+  authors: ['Author A', 'Author B'],
+  affiliations: ['University / Lab'],
+  publishDate: '2026年X月',
+  category: 'RAG与检索', // 可选：'RAG与检索' | '大模型架构' | '智能体与推理' | '知识图谱'
+  tags: ['Tag1', 'Tag2'],
+  status: 'active',
+  tldrZh: '用一段通俗精炼的话总结这篇论文解决的核心痛点与取得的突破性指标...',
+  keyMetrics: [
+    { label: '核心指标提升', value: '+15.2%', highlight: true }
+  ],
+  features: ['5分钟速通', '双语精读', '交互实验台'],
+  component: YourNewPaperApp
+}
+```
+
+保存后，主页大厅会自动渲染该论文的展示卡片、支持分类与搜索，并自动开启 `#/paper/your-paper-slug` 路由访问！
 
 ---
 
-## 📖 当前收录重点论文：DecisionRAG (arXiv:2610.35868)
+## 🔥 首篇精读论文详解：DecisionRAG (arXiv:2610.35868)
 
-### 论文基本档案
-- **论文原题**：*Retriever-Free Retrieval: Navigating Documents with Decision Models*
-- **中文译名**：免检索器的检索架构：利用决策模型在文档层级树中智能导航
-- **作者阵容**：Chao Wan (万超), Paul Jünger, Beixi Du (杜北希), Bodong Liu (刘博东), Navaneetha Krishnan, Kilian Q. Weinberger
-- **研究机构**：康奈尔大学计算机系 (Cornell University) & ASAPP Research
-- **论文 DOI**：[https://doi.org/10.48550/arXiv.2610.35868](https://doi.org/10.48550/arXiv.2610.35868)
-- **代码仓库**：[https://github.com/decisionrag/decision-rag](https://github.com/decisionrag/decision-rag)
-- **所在目录**：[`papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/`](./papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/)
+| 属性 | 详情 |
+| :--- | :--- |
+| **英文标题** | *Retriever-Free Retrieval: Navigating Documents with Decision Models* |
+| **中文译名** | 免检索器的检索架构：利用决策模型在文档层级树中智能导航 |
+| **作者团队** | Chao Wan (万超), Paul Jünger, Beixi Du (杜北希), Bodong Liu (刘博东), Navaneetha Krishnan, Kilian Q. Weinberger |
+| **研究机构** | 康奈尔大学 (Cornell University) & ASAPP Research |
+| **原文链接** | [https://doi.org/10.48550/arXiv.2610.35868](https://doi.org/10.48550/arXiv.2610.35868) |
+| **专属目录** | [`papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/`](./papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/README.md) |
 
----
+### 核心思想一图流对比
 
-### 💡 核心痛点白话拆解：什么是『检索能力不对称性』？
+```text
+【传统两阶段向量 RAG 管线】
+用户提问 ──► 向量数据库粗筛 (易漏检关键段落!) ──► 8B 重排器 (巧妇难为无米之炊) ──► 下游 LLM 被迫幻觉
 
-传统 RAG 普遍将流程生硬切分为“检索器（双编码器向量检索 / BM25）”和“生成模型（LLM）”两个阶段：
-1. **致命短板**：下游的 LLM 越来越聪明（具备复杂推断与上下文理解能力），但上游负责第一道防线的向量检索器仍旧停留在将整段复杂文字强行压缩为一串低维浮点数（如 768 维向量），遇到否定句、多重约束条件或冷门专业词时极易算错余弦距离。
-2. **不可挽回的漏检**：一旦上游检索器在第一阶段（粗筛 Top-100）漏掉了真实目标文档，下游无论大模型多么聪明（甚至接入 8B 交叉重排器），也无法“凭空变出”未被召回的上下文，最终只能无奈产生幻觉或胡说八道。
-3. **生活化比喻**：就像请了一位博学多才的诺贝尔医学奖教授主刀手术，却派了一个分不清手术刀和剪刀的学徒去器械室拿工具。学徒拿错了工具，主刀教授医术再高也只能望洋兴叹。
-
----
-
-### ⚡ DecisionRAG 的四大革命性技术突破
-
-1. **彻底免除第一阶段检索器（Retriever-Free）**
-   - 彻底淘汰向量数据库（Vector DB）、Embedding 向量模型与高昂的 ANN/HNSW 索引维护成本。
-   - 不再让低能力模型做第一步粗筛，直接赋能通用预训练大模型亲自担任领航员。
-2. **单步前向传播零 Token 生成（Zero-Token Forward Pass）**
-   - 传统的智能体搜索（Agentic Search）需要逐字自回归吐出几百个词的思考过程，单次查询耗时 15 秒以上。
-   - DecisionRAG 在每个层级将所有候选分支拼入同一个 Prompt 中，**仅执行 1 次神经网络前向计算**，直接读取词表中选项标识符（如 'A', 'B', 'C'）的未归一化对数概率（Logits），**生成 0 个冗余 Token**，几十毫秒即可完成一层决策！
-3. **共享上下文横向对比（Shared-Context Scoring）**
-   - 传统双编码器（Bi-Encoder）最大的硬伤在于候选文档彼此独立计算内积，互相看不见。
-   - DecisionRAG 将所有竞争分支置于同一个自注意力上下文窗口中，利用 Transformer 全注意力机制进行横向 PK，有效消除打分漂移与假阳性。
-4. **图书馆层级树导航（Hierarchical Tree Navigation & Beam Search）**
-   - 现实知识天然具备层级拓扑（领域 ➔ 文档 ➔ 章节 ➔ 段落）。
-   - 配合束搜索（Beam Search，束宽 $B=2$ 或 $3$），逐层剪枝，将原本浩瀚的段落检索复杂度从线性 $\mathcal{O}(N)$ 降至对数级 $\mathcal{O}(\log N)$。
+【DecisionRAG 免检索器层级导航】
+用户提问 ──► 预训练决策模型 (LLM) 沿着文档天然层级树逐层下钻：
+            [第1层: 领域 Domain] ──(单次前向传播 + 共享上下文 PK + 束搜索剪枝)──►
+            [第2层: 文档 Document] ──(0 Token 生成，直接读取选项 Logits)──►
+            [第3层: 章节 Section] ──(耗时仅 0.7~1.8 秒)──►
+            [第4层: 精准命中目标段落 Passage!] (MultiDoc2Dial R@1 +13.8%, NQ Hit@1 +17.4%)
+```
 
 ---
 
-### 📊 权威基准测试战绩
-
-在涵盖 **268 万维基百科段落**在内的四大严苛基准上：
-- **MultiDoc2Dial (复杂政府政策问答)**：Top-1 召回率 **Recall@1 飙升至 60.0%**，相比最强工业基线（Dense + 8B 交叉重排器）提升高达 **+13.8 个百分点**！
-- **Natural Questions (268万段维基全库)**：Top-1 命中率 **Hit@1 跃升至 71.0%**，相比 Dense + 8B Reranker 绝对提升 **+17.4 个百分点**！
-- **检索速度实测**：端到端单次查询耗时稳定在 **0.7 ~ 1.8 秒**，完全满足高并发工业实时交互标准。
-- **零样本开箱即用 (Zero-Shot)**：无需针对任何特定数据集进行微调。
-
----
-
-### 💻 DecisionRAG 系统内包含的 5 大交互模块
-
-1. **⚡ 5分钟通俗速通导览**：初学者友好图文指南，配合生活化比喻与互动自测小问答。
-2. **📖 全文精读 & 双语对照**：完整忠实中文全译，支持中文、双语对照、英文原版三档切换，附白话笔记卡片与数学推导。
-3. **🔬 分层决策导航实验台**：在线输入查询，观察决策模型在维基百科、IBM Cloud 或政策库中单步前向传播、Logit 分布与束搜索剪枝过程。
-4. **📊 五大检索范式基准对比**：横向对比 BM25、Dense 向量、8B 重排器、Agentic 搜索与 DecisionRAG，剖析真实失败用例。
-5. **📚 核心概念双解词典**：生活比喻 + 严谨技术定义 + 论文核心创新三重解析。
-
----
-
-## 🛠️ 本地开发与运行指南
+## 🛠️ 快速开始与常用命令
 
 ```bash
-# 1. 安装项目依赖
+# 1. 安装依赖
 npm install
 
-# 2. 启动本地全栈交互大厅 (默认端口 3000)
+# 2. 启动本地开发服务器 (默认监听 http://localhost:3000)
 npm run dev
 
-# 3. 运行纯算法逻辑单元测试 (基于 Node.js 官方测试套件)
-npx --yes tsx --test papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/src/utils/treeNavigation.test.ts
+# 3. 运行纯逻辑算法单元测试 (Node.js 原生测试运行器)
+npm test
 
-# 4. 构建生产部署包
+# 4. TypeScript 类型安全检查
+npm run lint
+
+# 5. 构建生产环境静态包
 npm run build
 ```
 
 ---
 
-## 📚 学术引用格式 (BibTeX)
+## 📝 学术引用 (BibTeX)
 
 ```bibtex
 @article{wan2026decisionrag,
   title={Retriever-Free Retrieval: Navigating Documents with Decision Models},
-  author={Wan, Chao and J{\\"u}nger, Paul and Du, Beixi and Liu, Bodong and Krishnan, Navaneetha and Weinberger, Kilian Q.},
+  author={Wan, Chao and J{\"u}nger, Paul and Du, Beixi and Liu, Bodong and Krishnan, Navaneetha and Weinberger, Kilian Q.},
   journal={arXiv preprint arXiv:2610.35868},
   year={2026},
   doi={10.48550/arXiv.2610.35868}
