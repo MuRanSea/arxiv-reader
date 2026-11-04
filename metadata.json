@@ -1,0 +1,7 @@
+{
+  "name": "DecisionRAG 论文精读与交互探索",
+  "description": "arXiv:2610.35868《Retriever-Free Retrieval: Navigating Documents with Decision Models》全文中文翻译、深度概念详解与分层决策交互模拟器",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
