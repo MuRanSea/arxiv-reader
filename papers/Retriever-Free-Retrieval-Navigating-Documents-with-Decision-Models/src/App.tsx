@@ -8,8 +8,13 @@ import { GlossaryView } from './components/GlossaryView.js';
 import { PAPER_META } from './data/paperContent.js';
 import { BookOpen, Copy, Check, ArrowUpRight } from 'lucide-react';
 
-export default function App() {
-  const [currentView, setCurrentView] = useState<ViewMode>('beginner');
+interface AppProps {
+  onBackToHub?: () => void;
+  initialView?: ViewMode;
+}
+
+export default function App({ onBackToHub, initialView = 'beginner' }: AppProps = {}) {
+  const [currentView, setCurrentView] = useState<ViewMode>(initialView);
   const [langMode, setLangMode] = useState<LangMode>('zh');
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -41,6 +46,7 @@ export default function App() {
         onSearchChange={setSearchQuery}
         fontSize={fontSize}
         onFontSizeChange={setFontSize}
+        onBackToHub={onBackToHub}
       />
 
       {/* Main Content Area */}

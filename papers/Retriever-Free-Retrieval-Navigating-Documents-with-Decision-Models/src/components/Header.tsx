@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Sparkles, Cpu, BarChart3, HelpCircle, Globe, Search, ArrowUpRight } from 'lucide-react';
+import { BookOpen, Sparkles, Cpu, BarChart3, HelpCircle, Globe, Search, ArrowUpRight, Compass } from 'lucide-react';
 import { PAPER_META } from '../data/paperContent.js';
 
 export type ViewMode = 'reader' | 'beginner' | 'simulator' | 'comparison' | 'glossary';
@@ -14,6 +14,7 @@ interface HeaderProps {
   onSearchChange: (q: string) => void;
   fontSize: 'sm' | 'md' | 'lg';
   onFontSizeChange: (size: 'sm' | 'md' | 'lg') => void;
+  onBackToHub?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchChange,
   fontSize,
   onFontSizeChange,
+  onBackToHub,
 }) => {
   return (
     <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-slate-100">
@@ -66,6 +68,16 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Title & Brand */}
         <div className="flex items-center gap-3">
+          {onBackToHub && (
+            <button
+              onClick={onBackToHub}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/40 transition-all cursor-pointer flex-shrink-0 shadow-sm"
+              title="返回论文目录大厅"
+            >
+              <Compass className="w-3.5 h-3.5 text-emerald-400" />
+              <span>返回大厅</span>
+            </button>
+          )}
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
             <Cpu className="w-5 h-5 text-white" />
           </div>

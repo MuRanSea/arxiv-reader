@@ -17,15 +17,15 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/*": [
-        "./Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@papers/*": ["./papers/*"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
   "include": [
-    "Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/**/*",
+    "src/**/*",
+    "papers/**/*",
     "vite.config.ts"
   ],
   "exclude": ["dist"]

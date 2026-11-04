@@ -5,11 +5,12 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    root: path.resolve(__dirname, 'Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models'),
+    root: path.resolve(__dirname, '.'),
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/src'),
+        '@': path.resolve(__dirname, 'src'),
+        '@papers': path.resolve(__dirname, 'papers'),
       },
     },
     build: {
