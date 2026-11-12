@@ -30,7 +30,7 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showAddGuide, setShowAddGuide] = useState<boolean>(false);
 
-  const categories = ['全部', 'RAG与检索', '大模型架构', '智能体与推理', '知识图谱'];
+  const categories = ['全部', '大模型架构', '高效微调 (PEFT)', '视觉与生成模型', 'RAG与检索'];
 
   const filteredPapers = REGISTERED_PAPERS.filter((p) => {
     const matchCat = selectedCategory === '全部' || p.category === selectedCategory;
@@ -106,22 +106,22 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
                 <span className="text-xl font-bold font-mono text-white mt-0.5 block">
                   {REGISTERED_PAPERS.filter(p => p.status === 'active').length} 篇全功能
                 </span>
-                <span className="text-[10px] text-emerald-400">RAG / DPR / ColBERT / DecisionRAG</span>
+                <span className="text-[10px] text-emerald-400">涵盖架构 / PEFT / 视觉生成 / RAG</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
                 <span className="text-[11px] text-slate-400 block">概念双解词条</span>
-                <span className="text-xl font-bold font-mono text-emerald-400 mt-0.5 block">40+ 项</span>
-                <span className="text-[10px] text-slate-400">白话比喻 + 严谨定义</span>
+                <span className="text-xl font-bold font-mono text-emerald-400 mt-0.5 block">120+ 项</span>
+                <span className="text-[10px] text-slate-400">白话比喻 + 严谨数学定义</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
                 <span className="text-[11px] text-slate-400 block">专属算法实验台</span>
-                <span className="text-xl font-bold font-mono text-white mt-0.5 block">4 套模拟器</span>
-                <span className="text-[10px] text-teal-400">边缘化 / 对比矩阵 / MaxSim / 树导航</span>
+                <span className="text-xl font-bold font-mono text-white mt-0.5 block">13 套模拟器</span>
+                <span className="text-[10px] text-teal-400">自注意力 / LoRA / 扩散 / 博弈 / 检索</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
                 <span className="text-[11px] text-slate-400 block">评测对比基准</span>
-                <span className="text-xl font-bold font-mono text-white mt-0.5 block">10+ Benchmark</span>
-                <span className="text-[10px] text-slate-400">NQ / MS MARCO / MultiDoc2Dial</span>
+                <span className="text-xl font-bold font-mono text-white mt-0.5 block">30+ Benchmark</span>
+                <span className="text-[10px] text-slate-400">GLUE / ImageNet / NQ / MS MARCO</span>
               </div>
             </div>
           </div>

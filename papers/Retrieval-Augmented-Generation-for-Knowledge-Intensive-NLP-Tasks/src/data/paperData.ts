@@ -1,4 +1,4 @@
-import { UniversalPaperData } from '../../../src/shared/types/universalPaper.js';
+import { UniversalPaperData } from '../../../../src/shared/types/universalPaper.js';
 
 export const RAG_2020_PAPER_DATA: UniversalPaperData = {
   id: 'rag-2020',

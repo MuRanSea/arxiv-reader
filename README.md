@@ -1,204 +1,73 @@
-# 🏛️ AI Paper Lab ｜ 顶级 AI 论文精读与交互探索平台
+# AI Paper Lab · 顶级 AI 论文中文精读与交互式算法实验平台
 
-<div align="center">
-
-**一个论文一个独立文件夹 · 主页统一路由调度 · 亮色/暗色双套学术主题 · 可交互算法实验台**
-
-[![Architecture](https://img.shields.io/badge/Architecture-One%20Paper%20One%20Folder-10b981?style=flat-square)](#)
-[![Theme](https://img.shields.io/badge/Theme-Light%20%26%20Dark%20Mode-f59e0b?style=flat-square)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square)](#)
-[![Tests](https://img.shields.io/badge/Unit%20Tests-Passing-22c55e?style=flat-square)](#)
-
-</div>
+本项目采用**「一个论文一个文件夹（One Paper, One Folder）」**的模块化架构设计。每篇收录的论文均存放在 `papers/<论文英文全名>/` 独立子目录下，拥有专属的中文 `README.md`、完整结构化精读数据以及可交互的算法模拟器实验台；根目录 `index.html` 与 `src/portal/PaperHub.tsx` 负责统一路由分发、分类检索、全局字号调节（`小 / 中 / 大`）与双主题切换（`亮色 / 暗色`）。
 
 ---
 
-## 🌟 项目愿景与设计理念
+## 一、 已收录全功能论文名录（共 13 篇奠基与前沿巨著）
 
-传统的论文阅读往往受限于静态枯燥的 PDF 文档：初学者面对密集的数学符号和生僻术语望而却步，而资深研究者也缺乏直观验证算法中间状态（如注意力分布、树搜索剪枝、Logits 概率变化）的交互工具。
+### 1. 大模型架构基石（LLM Architecture）
+| 序号 | 论文简称 | 论文原名与发表会议 | 独立文件夹路径 (`papers/...`) | 专属交互实验台 |
+| :--- | :--- | :--- | :--- | :--- |
+| 01 | **Transformer** | *Attention Is All You Need* (Vaswani et al., NeurIPS 2017, `arXiv:1706.03762`) | `papers/Attention-Is-All-You-Need/` | Q/K/V 缩放点积 $\div\sqrt{d_k}$ 梯度保护与因果掩码模拟器 |
+| 02 | **BERT** | *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding* (Devlin et al., NAACL 2019, `arXiv:1810.04805`) | `papers/BERT-Pre-training-of-Deep-Bidirectional-Transformers-for-Language-Understanding/` | 双向 vs 单向语境消歧、80-10-10 MLM 策略与三合一嵌入模拟器 |
+| 03 | **GPT (GPT-1~3)** | *Language Models are Few-Shot Learners* (Brown, Radford, Sutskever et al., NeurIPS 2020, `arXiv:2005.14165`) | `papers/Language-Models-are-Few-Shot-Learners-GPT/` | Zero/One/Few-Shot 上下文学习与 $125\text{M}\to 175\text{B}$ 规模涌现模拟器 |
 
-**AI Paper Lab** 旨在将每一篇改变领域走向的重磅 AI 论文，转化为一套**“可读、可玩、可测、可对比”**的交互式 Web 探索系统：
+### 2. 参数高效微调（PEFT & Low-Rank Adaptation）
+| 序号 | 论文简称 | 论文原名与发表会议 | 独立文件夹路径 (`papers/...`) | 专属交互实验台 |
+| :--- | :--- | :--- | :--- | :--- |
+| 04 | **LoRA** | *LoRA: Low-Rank Adaptation of Large Language Models* (Hu et al., ICLR 2022, `arXiv:2106.09685`) | `papers/LoRA-Low-Rank-Adaptation-of-Large-Language-Models/` | 低秩矩阵分解 $\Delta W=BA$、显存计算器与零延迟权重合并模拟器 |
+| 05 | **PEFT / Adapter** | *Parameter-Efficient Transfer Learning for NLP* & *Unified View* (Houlsby et al., ICML 2019 / He et al., ICLR 2022, `arXiv:1902.00751`) | `papers/Parameter-Efficient-Transfer-Learning-for-NLP/` | 五大 PEFT 范式（Serial/Parallel Adapter、Prefix、Prompt、MAM）与近恒等初始化模拟器 |
 
-1. **🎯 零门槛与高保真兼得**：既提供适合初学者的**「5分钟通俗白话导览 + 生活化比喻 + 即测即练小问答」**，又完整保留**「中英双语逐段对照精读 + 严谨数学推导 + 实验基准全表」**，绝不丢失任何学术细节。
-2. **🔬 在线算法实验台（Interactive Simulator）**：将论文的核心算法提炼为纯 TypeScript 引擎，支持在网页端实时输入 Query、调整超参数（如 Beam Width）、单步观察 Prompt 构造与模型打分。
-3. **🌗 亮色 / 暗色双套主题（Dual Theme System）**：
-   - **☀️ 亮色模式（Light Scholarly Paper）**：模拟温暖高对比度的学术纸张质感，适合长时间沉浸式精读与做笔记。
-   - **🌙 暗色模式（Dark Geek Terminal）**：深邃极客暗黑配色，凸显代码终端、数学公式与概率分布图表的层次感。
-   - 支持一键无缝切换并自动记忆用户偏好（`localStorage` 持久化）。
-4. **📦 “一个论文一个文件夹”插件化架构**：主页大厅（`PaperHub`）统一负责论文检索、分类过滤与 Hash 路由分发；每篇论文拥有完全独立的子目录，互不耦合、即插即用。
+### 3. 视觉与深度生成模型（Vision & Generative Models）
+| 序号 | 论文简称 | 论文原名与发表会议 | 独立文件夹路径 (`papers/...`) | 专属交互实验台 |
+| :--- | :--- | :--- | :--- | :--- |
+| 06 | **ViT** | *An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale* (Dosovitskiy et al., ICLR 2021, `arXiv:2010.11929`) | `papers/An-Image-is-Worth-16x16-Words-Transformers-for-Image-Recognition-at-Scale/` | $16\times 16$ 图像切块序列化、2D 位置编码相似度与数据规模反超模拟器 |
+| 07 | **VAE** | *Auto-Encoding Variational Bayes* (Kingma & Welling, ICLR 2014, `arXiv:1312.6114`) | `papers/Auto-Encoding-Variational-Bayes/` | 重参数化技巧 $z=\mu+\sigma\odot\epsilon$ 梯度流、ELBO 权衡与二维流形插值模拟器 |
+| 08 | **GAN** | *Generative Adversarial Nets* (Goodfellow et al., NeurIPS 2014, `arXiv:1406.2661`) | `papers/Generative-Adversarial-Nets/` | 极小极大博弈四阶段演化（复现 Figure 1）与非饱和梯度模拟器 |
+| 09 | **Stable Diffusion** | *High-Resolution Image Synthesis with Latent Diffusion Models* (Rombach et al., CVPR 2022 Oral, `arXiv:2112.10752`) | `papers/High-Resolution-Image-Synthesis-with-Latent-Diffusion-Models/` | 感知压缩下采样率 $f\in\{1,4,8,32\}$、潜空间逆向去噪与 Cross-Attention 模拟器 |
+
+### 4. RAG 与现代信息检索（RAG & Neural IR）
+| 序号 | 论文简称 | 论文原名与发表会议 | 独立文件夹路径 (`papers/...`) | 专属交互实验台 |
+| :--- | :--- | :--- | :--- | :--- |
+| 10 | **RAG** | *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks* (Lewis et al., NeurIPS 2020, `arXiv:2005.11401`) | `papers/Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks/` | RAG-Sequence vs RAG-Token 逐词边缘化与零训练索引热插拔模拟器 |
+| 11 | **DPR** | *Dense Passage Retrieval for Open-Domain Question Answering* (Karpukhin et al., EMNLP 2020, `arXiv:2004.04906`) | `papers/Dense-Passage-Retrieval-for-Open-Domain-Question-Answering/` | 双塔编码器批内负样本（In-Batch Negatives）与 BM25 困难负样本对比学习模拟器 |
+| 12 | **ColBERT** | *ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT* (Khattab & Zaharia, SIGIR 2020, `arXiv:2004.12832`) | `papers/ColBERT-Efficient-and-Effective-Passage-Search-via-Contextualized-Late-Interaction-over-BERT/` | 延迟交互 MaxSim 词元对齐矩阵与 `[MASK]` 查询软扩展模拟器 |
+| 13 | **DecisionRAG** | *Retriever-Free Retrieval: Navigating Documents with Decision Models* (`arXiv:2610.35868`) | `papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/` | 免检索器文档层级树 Beam Search 零 Token 导航实验台 |
 
 ---
 
-## 📂 项目目录结构与模块职责
+## 二、 项目目录结构
 
 ```text
-/                                                           # 仓库根目录 (全局门户与构建宿主)
-├── index.html                                              # 🌐 全局门户入口 HTML
-├── README.md                                               # 📖 平台总览、架构规范与新论文接入指南 (本文档)
-├── package.json                                            # 📦 全局依赖管理与一键脚本 (dev / build / test)
-├── vite.config.ts                                          # ⚙️ Vite 构建配置与路径别名 (@, @papers)
-├── tsconfig.json                                           # ⚙️ TypeScript 严格模式与模块映射
-│
-├── src/                                                    # 💻 全局门户与共享基础设施层
-│   ├── main.tsx                                            # 挂载入口
-│   ├── index.css                                           # 🎨 全局样式表与【亮色/暗色双套主题】自适应引擎
-│   ├── App.tsx                                             # 🧭 动态路由调度器 (根据 URL Hash 动态挂载对应论文模块)
+/
+├── index.html                                 # 平台统一入口 HTML
+├── README.md                                  # 平台架构说明与 13 篇论文总目录（本文件）
+├── src/
+│   ├── App.tsx                                # 顶层 Hash 路由控制器 (#/ 与 #/paper/<id>)
+│   ├── index.css                              # Tailwind v4 语义化颜色变量与全局字号/选中高亮引擎
 │   ├── portal/
-│   │   └── PaperHub.tsx                                    # 🏛️ 论文探索大厅 (论文卡片矩阵、分类筛选、全文检索)
-│   └── shared/                                             # 🧩 跨论文共享核心库
-│       ├── types/
-│       │   └── paper.ts                                    # 统一的论文注册表接口与模块 Props 契约
-│       ├── theme/
-│       │   └── ThemeContext.tsx                            # 全局亮色/暗色主题 Context 状态管理与持久化
-│       └── components/
-│           └── ThemeToggle.tsx                             # 通用亮色/暗色主题切换组件
-│
-└── papers/                                                 # 📚 论文独立模块仓库 (One Paper, One Folder)
-    ├── registry.ts                                         # 📋 全局论文注册表 (集中登记所有论文元数据与组件入口)
-    │
-    ├── Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/               # 📁 [已上线] 论文 01: DecisionRAG (arXiv:2610.35868)
-    │   ├── README.md                                       # 📄 DecisionRAG 中文深度解析文档
-    │   └── src/                                            # 💻 分层决策树导航实验台与完整双语译本
-    │
-    ├── Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks/                 # 📁 [已上线] 论文 02: RAG 奠基论文 (NeurIPS 2020, arXiv:2005.11401)
-    │   ├── README.md                                       # 📄 RAG 奠基论文专属中文解析文档
-    │   └── src/                                            # 💻 RAG-Sequence / RAG-Token 概率边缘化与索引热插拔实验台
-    │
-    ├── Dense-Passage-Retrieval-for-Open-Domain-Question-Answering/                       # 📁 [已上线] 论文 03: DPR 稠密向量检索论文 (EMNLP 2020, arXiv:2004.04906)
-    │   ├── README.md                                       # 📄 DPR 专属中文解析文档
-    │   └── src/                                            # 💻 双编码器对比学习、批内负样本与 BM25 困难负样本矩阵实验台
-    │
-    └── ColBERT-Efficient-and-Effective-Passage-Search-via-Contextualized-Late-Interaction-over-BERT/ # 📁 [已上线] 论文 04: ColBERT 延迟交互论文 (SIGIR 2020, arXiv:2004.12832)
-        ├── README.md                                       # 📄 ColBERT 专属中文解析文档
-        └── src/                                            # 💻 词元级延迟交互、MaxSim 矩阵与 [MASK] 查询软扩展实验台
-```
-
----
-
-## 🔌 如何添加一篇新论文？（3 步标准化接入规范）
-
-得益于**动态注册表路由（Dynamic Registry Routing）**与**全局双主题自适应引擎**，往平台中添加第 2 篇、第 10 篇新论文时，**完全不需要修改根目录路由代码**，只需遵循以下 3 个步骤：
-
-### 第一步：在 `papers/` 下新建以论文英文标题命名的文件夹
-
-```bash
-mkdir -p papers/Your-New-Paper-Title/src/{components,data,utils}
-```
-
-### 第二步：实现论文内部模块与专属 `README.md`
-
-在 `papers/Your-New-Paper-Title/src/App.tsx` 中导出默认组件，接收标准 `PaperModuleProps`（包含 `onBackToHub` 回调与 `initialView` 初始子视图）：
-
-```tsx
-import React from 'react';
-import { PaperModuleProps } from '../../../src/shared/types/paper.js';
-import { ThemeToggle } from '../../../src/shared/components/ThemeToggle.js';
-
-export default function YourNewPaperApp({ onBackToHub, initialView }: PaperModuleProps) {
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="p-4 border-b border-slate-800 flex justify-between items-center">
-        <button onClick={onBackToHub}>← 返回大厅</button>
-        <ThemeToggle />
-      </header>
-      {/* 你的论文精读、概念拆解与交互实验台 */}
-    </div>
-  );
-}
-```
-
-> 💡 **主题适配小贴士**：编写新论文组件时，只需使用标准 Tailwind 类名（如 `bg-slate-950`、`bg-slate-900`、`text-white`、`text-slate-300`、`border-slate-800`），根目录的 `src/index.css` 主题引擎会自动将其无缝映射为**亮色/暗色两套高对比度配色**！
-
-### 第三步：在 `papers/registry.ts` 中注册登记
-
-打开 `papers/registry.ts`，导入你的论文组件并在 `REGISTERED_PAPERS` 数组中添加一条记录：
-
-```typescript
-import YourNewPaperApp from './Your-New-Paper-Title/src/App.js';
-
-// 在 REGISTERED_PAPERS 数组末尾追加：
-{
-  id: 'your-paper-slug',
-  folderName: 'Your-New-Paper-Title',
-  titleZh: '论文中文完整译名',
-  titleEn: 'Original English Paper Title',
-  arxivId: 'arXiv:26XX.XXXXX',
-  doi: 'https://doi.org/10.48550/arXiv.26XX.XXXXX',
-  authors: ['Author A', 'Author B'],
-  affiliations: ['University / Lab'],
-  publishDate: '2026年X月',
-  category: 'RAG与检索', // 可选：'RAG与检索' | '大模型架构' | '智能体与推理' | '知识图谱'
-  tags: ['Tag1', 'Tag2'],
-  status: 'active',
-  tldrZh: '用一段通俗精炼的话总结这篇论文解决的核心痛点与取得的突破性指标...',
-  keyMetrics: [
-    { label: '核心指标提升', value: '+15.2%', highlight: true }
-  ],
-  features: ['5分钟速通', '双语精读', '交互实验台'],
-  component: YourNewPaperApp
-}
-```
-
-保存后，主页大厅会自动渲染该论文的展示卡片、支持分类与搜索，并自动开启 `#/paper/your-paper-slug` 路由访问！
-
----
-
-## 🔥 首篇精读论文详解：DecisionRAG (arXiv:2610.35868)
-
-| 属性 | 详情 |
-| :--- | :--- |
-| **英文标题** | *Retriever-Free Retrieval: Navigating Documents with Decision Models* |
-| **中文译名** | 免检索器的检索架构：利用决策模型在文档层级树中智能导航 |
-| **作者团队** | Chao Wan (万超), Paul Jünger, Beixi Du (杜北希), Bodong Liu (刘博东), Navaneetha Krishnan, Kilian Q. Weinberger |
-| **研究机构** | 康奈尔大学 (Cornell University) & ASAPP Research |
-| **原文链接** | [https://doi.org/10.48550/arXiv.2610.35868](https://doi.org/10.48550/arXiv.2610.35868) |
-| **专属目录** | [`papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/`](./papers/Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/README.md) |
-
-### 核心思想一图流对比
-
-```text
-【传统两阶段向量 RAG 管线】
-用户提问 ──► 向量数据库粗筛 (易漏检关键段落!) ──► 8B 重排器 (巧妇难为无米之炊) ──► 下游 LLM 被迫幻觉
-
-【DecisionRAG 免检索器层级导航】
-用户提问 ──► 预训练决策模型 (LLM) 沿着文档天然层级树逐层下钻：
-            [第1层: 领域 Domain] ──(单次前向传播 + 共享上下文 PK + 束搜索剪枝)──►
-            [第2层: 文档 Document] ──(0 Token 生成，直接读取选项 Logits)──►
-            [第3层: 章节 Section] ──(耗时仅 0.7~1.8 秒)──►
-            [第4层: 精准命中目标段落 Passage!] (MultiDoc2Dial R@1 +13.8%, NQ Hit@1 +17.4%)
-```
-
----
-
-## 🛠️ 快速开始与常用命令
-
-```bash
-# 1. 安装依赖
-npm install
-
-# 2. 启动本地开发服务器 (默认监听 http://localhost:3000)
-npm run dev
-
-# 3. 运行纯逻辑算法单元测试 (Node.js 原生测试运行器)
-npm test
-
-# 4. TypeScript 类型安全检查
-npm run lint
-
-# 5. 构建生产环境静态包
-npm run build
-```
-
----
-
-## 📝 学术引用 (BibTeX)
-
-```bibtex
-@article{wan2026decisionrag,
-  title={Retriever-Free Retrieval: Navigating Documents with Decision Models},
-  author={Wan, Chao and J{\"u}nger, Paul and Du, Beixi and Liu, Bodong and Krishnan, Navaneetha and Weinberger, Kilian Q.},
-  journal={arXiv preprint arXiv:2610.35868},
-  year={2026},
-  doi={10.48550/arXiv.2610.35868}
-}
+│   │   └── PaperHub.tsx                       # 论文探索大厅主页（分类筛选、搜索、卡片导览）
+│   └── shared/
+│       ├── components/
+│       │   ├── PaperExplorerLayout.tsx        # 通用五合一论文精读与实验台骨架
+│       │   └── ThemeToggle.tsx                # 亮色 / 暗色 主题切换器
+│       └── types/
+│           ├── paper.ts                       # 注册中心元数据类型定义
+│           └── universalPaper.ts              # 论文数据结构与自动归一化适配器
+└── papers/
+    ├── registry.ts                            # 13 篇论文统一注册表
+    ├── Attention-Is-All-You-Need/
+    ├── BERT-Pre-training-of-Deep-Bidirectional-Transformers-for-Language-Understanding/
+    ├── Language-Models-are-Few-Shot-Learners-GPT/
+    ├── LoRA-Low-Rank-Adaptation-of-Large-Language-Models/
+    ├── Parameter-Efficient-Transfer-Learning-for-NLP/
+    ├── An-Image-is-Worth-16x16-Words-Transformers-for-Image-Recognition-at-Scale/
+    ├── Auto-Encoding-Variational-Bayes/
+    ├── Generative-Adversarial-Nets/
+    ├── High-Resolution-Image-Synthesis-with-Latent-Diffusion-Models/
+    ├── Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks/
+    ├── Dense-Passage-Retrieval-for-Open-Domain-Question-Answering/
+    ├── ColBERT-Efficient-and-Effective-Passage-Search-via-Contextualized-Late-Interaction-over-BERT/
+    └── Retriever-Free-Retrieval-Navigating-Documents-with-Decision-Models/
 ```

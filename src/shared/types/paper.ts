@@ -7,7 +7,13 @@ export interface PaperModuleProps {
   initialView?: string;
 }
 
-export type PaperCategory = 'RAG与检索' | '大模型架构' | '智能体与推理' | '知识图谱';
+export type PaperCategory =
+  | 'RAG与检索'
+  | '大模型架构'
+  | '高效微调 (PEFT)'
+  | '视觉与生成模型'
+  | '智能体与推理'
+  | '知识图谱';
 
 export interface PaperMetric {
   label: string;

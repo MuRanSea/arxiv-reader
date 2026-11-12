@@ -22,25 +22,44 @@ import {
   Check,
   FileDown
 } from 'lucide-react';
-import { UniversalPaperData } from '../types/universalPaper.js';
+import { UniversalPaperData, normalizeUniversalPaperData } from '../types/universalPaper.js';
 import { ThemeToggle } from './ThemeToggle.js';
+import { useTheme } from '../theme/ThemeContext.js';
 
 export type ExplorerViewMode = 'beginner' | 'reader' | 'simulator' | 'comparison' | 'glossary';
 export type ExplorerLangMode = 'zh' | 'bilingual' | 'en';
 
+const HEADER_CONTAINER_BREAKPOINT = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8';
+const VIEWPORT_WIDE_BREAKPOINT = 'paper-viewport-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8';
+const VIEWPORT_MEDIUM_BREAKPOINT = 'paper-viewport-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8';
+const VIEWPORT_READING_BREAKPOINT = 'paper-viewport-section max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8';
+
 interface PaperExplorerLayoutProps {
-  paper: UniversalPaperData;
-  simulatorComponent: React.ReactNode;
+  paper?: UniversalPaperData;
+  data?: UniversalPaperData;
+  simulatorComponent?: React.ReactNode;
+  simulatorSlot?: React.ReactNode;
   onBackToHub?: () => void;
+  onBack?: () => void;
   initialView?: string;
 }
 
 export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
-  paper,
+  paper: rawPaper,
+  data: rawData,
   simulatorComponent,
+  simulatorSlot,
   onBackToHub,
+  onBack,
   initialView = 'beginner'
 }) => {
+  const { theme } = useTheme();
+  const paper = useMemo(
+    () => normalizeUniversalPaperData((rawPaper || rawData)!),
+    [rawPaper, rawData]
+  );
+  const resolvedSimulator = simulatorComponent ?? simulatorSlot;
+  const resolvedOnBack = onBackToHub ?? onBack;
   const [currentView, setCurrentView] = useState<ExplorerViewMode>(
     (initialView as ExplorerViewMode) || 'beginner'
   );
@@ -167,11 +186,14 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
     fontSize === 'sm' ? 'text-lg' : fontSize === 'lg' ? 'text-2xl' : 'text-xl';
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div
+      className="paper-explorer-shell min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans"
+      data-paper-theme={theme}
+    >
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-slate-100">
         {/* Top Banner with Citation Meta & Direct PDF / Abs Links */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/60 text-xs text-slate-400">
+        <div className={`${HEADER_CONTAINER_BREAKPOINT} py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/60 text-xs text-slate-400`}>
           <div className="flex items-center gap-2 flex-wrap">
             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono font-medium border border-emerald-500/20">
               {paper.arxivId}
@@ -210,11 +232,11 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
         </div>
 
         {/* Main Navbar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className={`${HEADER_CONTAINER_BREAKPOINT} py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4`}>
           <div className="flex items-center gap-3">
-            {onBackToHub && (
+            {resolvedOnBack && (
               <button
-                onClick={onBackToHub}
+                onClick={resolvedOnBack}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/40 transition-all cursor-pointer flex-shrink-0 shadow-sm"
                 title="返回论文目录大厅"
               >
@@ -416,11 +438,11 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
         </div>
       </header>
 
-      {/* Main Content Area with Global Font Scaling */}
+      {/* Main Content Area with Global Font Scaling & Semantic Token Enforcement */}
       <div className={`flex-1 paper-fontsize-${fontSize}`} data-fontsize={fontSize}>
         {/* VIEW 1: BEGINNER GUIDE */}
         {currentView === 'beginner' && (
-          <div className="max-w-5xl mx-auto px-4 py-8 space-y-10">
+          <div className={`${VIEWPORT_READING_BREAKPOINT} space-y-10`}>
             <div className="relative rounded-2xl overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 border border-slate-800 shadow-2xl">
               <div className="relative z-10 max-w-3xl space-y-3">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
@@ -649,7 +671,7 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
 
         {/* VIEW 2: FULL PAPER READER */}
         {currentView === 'reader' && (
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className={VIEWPORT_WIDE_BREAKPOINT}>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* Left Sticky TOC */}
               <aside className="hidden lg:block lg:col-span-3 sticky top-28 space-y-4">
@@ -980,11 +1002,15 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
         )}
 
         {/* VIEW 3: INTERACTIVE SIMULATOR */}
-        {currentView === 'simulator' && simulatorComponent}
+        {currentView === 'simulator' && (
+          <div className={`paper-simulator-stage ${VIEWPORT_WIDE_BREAKPOINT}`}>
+            {resolvedSimulator}
+          </div>
+        )}
 
         {/* VIEW 4: BENCHMARK & PARADIGM COMPARISON */}
         {currentView === 'comparison' && (
-          <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+          <div className={`${VIEWPORT_MEDIUM_BREAKPOINT} space-y-8`}>
             <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
@@ -1235,7 +1261,7 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
 
         {/* VIEW 5: GLOSSARY */}
         {currentView === 'glossary' && (
-          <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+          <div className={`${VIEWPORT_MEDIUM_BREAKPOINT} space-y-8`}>
             <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
