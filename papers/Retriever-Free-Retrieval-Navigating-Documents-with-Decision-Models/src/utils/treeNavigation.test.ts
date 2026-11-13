@@ -63,12 +63,34 @@ const mockCorpusTree: DocumentNode[] = [
   }
 ];
 
-test('calculateBranchAffinity accurately scores keyword matches and rationales', () => {
+test('calculateBranchAffinity accurately scores keyword matches and decomposes relevance weights', () => {
   const node = mockCorpusTree[0];
   const affinity = calculateBranchAffinity('如何在RAG中应用检索决策模型？', node);
   assert.ok(affinity.logit > 1.0, 'Logit should be positive and elevated for matched keywords');
   assert.ok(affinity.matched.length >= 2, 'Should match keywords like RAG and 检索');
   assert.match(affinity.rationale, /命中了关键概念/);
+  assert.equal(
+    Number(
+      (
+        affinity.breakdown.priorWeight +
+        affinity.breakdown.keywordWeight +
+        affinity.breakdown.titleWeight +
+        affinity.breakdown.contextSummaryWeight +
+        affinity.breakdown.leafSpecificityWeight
+      ).toFixed(2)
+    ),
+    affinity.logit,
+    'Sum of breakdown weights must equal total logit'
+  );
+  assert.equal(
+    affinity.breakdown.dimensionShares.keywordPct +
+      affinity.breakdown.dimensionShares.titlePct +
+      affinity.breakdown.dimensionShares.contextPct +
+      affinity.breakdown.dimensionShares.priorAndLeafPct,
+    100,
+    'Dimension shares must sum to 100%'
+  );
+  assert.ok(affinity.breakdown.tokenSignals.length > 0, 'Must emit token attention signals');
 });
 
 test('computeSoftmax normalizes logits to valid probability distribution summing to ~1', () => {
@@ -80,12 +102,19 @@ test('computeSoftmax normalizes logits to valid probability distribution summing
   assert.ok(probs[0] > probs[1] && probs[1] > probs[2], 'Probabilities must preserve order of logits');
 });
 
-test('runDecisionRagNavigation executes beam search down to passage level with 0 tokens generated', () => {
+test('runDecisionRagNavigation executes beam search down to passage level and populates step decision summaries', () => {
   const result = runDecisionRagNavigation('单次前向传播与零Token如何降低延迟？', mockCorpusTree, 1);
   assert.equal(result.stats.tokensGenerated, 0, 'DecisionRAG must generate 0 tokens during retrieval');
   assert.ok(result.steps.length >= 2, 'Should traverse multiple hierarchy levels');
   assert.ok(result.finalPassages.length > 0, 'Must retrieve target leaf passage');
   assert.equal(result.finalPassages[0].node.id, 'pas-forward-pass', 'Should retrieve the exact passage');
+
+  for (const step of result.steps) {
+    assert.ok(step.decisionSummary.topWinnerId, 'Each step must identify topWinnerId');
+    assert.ok(step.decisionSummary.beamConfidenceShare > 0 && step.decisionSummary.beamConfidenceShare <= 1);
+    assert.ok(step.decisionSummary.hopConclusionZh.length > 10);
+    assert.equal(step.candidates[0].rank, 1);
+  }
 });
 
 test('PARADIGM_BENCHMARKS contains correct relative superiority for DecisionRAG', () => {

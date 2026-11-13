@@ -404,7 +404,13 @@ export function normalizeUniversalPaperData(raw: UniversalPaperData): FullUniver
 
   return {
     id: raw.id,
-    arxivId: raw.arxivId.startsWith('arXiv:') ? raw.arxivId : `arXiv:${raw.arxivId}`,
+    arxivId:
+      raw.arxivId.startsWith('arXiv:') ||
+      raw.arxivId.startsWith('OSDI') ||
+      raw.arxivId.startsWith('Nature') ||
+      raw.arxivId.startsWith('doi:')
+        ? raw.arxivId
+        : `arXiv:${raw.arxivId}`,
     venueBadge,
     publishDate: venueBadge,
     absUrl: raw.abstractUrl,
@@ -417,9 +423,9 @@ export function normalizeUniversalPaperData(raw: UniversalPaperData): FullUniver
     tldrZh: raw.summary,
     coreInnovations: raw.takeaways.map((t) => ({ title: t.title, desc: t.desc })),
     abstractZh: `${raw.summary}\n\n【核心问题】${raw.coreProblem}\n\n【破局思路】${raw.coreIdea}`,
-    abstractEn: `${raw.title} (${raw.subtitle}) — arXiv:${raw.arxivId}. ${raw.summary}`,
-    bibtex: `@article{${raw.id.replace(/[^a-z0-9]/gi, '')},\n  title={${raw.title}},\n  author={${authors.join(' and ')}},\n  journal={arXiv preprint arXiv:${raw.arxivId}},\n  year={${venueBadge.match(/\d{4}/)?.[0] || '2020'}}\n}`,
-    simulatorTabLabel: '交互式算法实验台',
+    abstractEn: `${raw.title} (${raw.subtitle}) — ${raw.arxivId}. ${raw.summary}`,
+    bibtex: `@article{${raw.id.replace(/[^a-z0-9]/gi, '')},\n  title={${raw.title}},\n  author={${authors.join(' and ')}},\n  journal={${raw.arxivId}},\n  year={${venueBadge.match(/\d{4}/)?.[0] || '2022'}}\n}`,
+    simulatorTabLabel: raw.simulatorTitle || '交互式算法实验台',
     beginnerSteps,
     beginnerQuiz,
     chapters,

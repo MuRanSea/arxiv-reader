@@ -4,14 +4,18 @@ export type ThemeMode = 'light' | 'dark';
 
 export interface PaperModuleProps {
   onBackToHub?: () => void;
+  onBack?: () => void;
   initialView?: string;
 }
 
 export type PaperCategory =
-  | 'RAG与检索'
   | '大模型架构'
+  | '训练与扩展定律'
   | '高效微调 (PEFT)'
+  | '推理与服务栈'
+  | '对齐与推理智能体'
   | '视觉与生成模型'
+  | 'RAG与检索'
   | '智能体与推理'
   | '知识图谱';
 

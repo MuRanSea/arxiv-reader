@@ -15,7 +15,11 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
-  Eye
+  Eye,
+  Sliders,
+  Scale,
+  Layers,
+  Target
 } from 'lucide-react';
 import {
   runDecisionRagNavigation,
@@ -30,7 +34,14 @@ import {
   PredefinedQuery
 } from '../data/mockTreeCorpus.js';
 
-type TraceNodeStatus = 'router' | 'domain-active' | 'domain-idle' | 'target-hit' | 'active-beam' | 'evaluated-pruned' | 'unvisited';
+type TraceNodeStatus =
+  | 'router'
+  | 'domain-active'
+  | 'domain-idle'
+  | 'target-hit'
+  | 'active-beam'
+  | 'evaluated-pruned'
+  | 'unvisited';
 
 interface TraceTreeDatum {
   id: string;
@@ -56,6 +67,7 @@ export const NavigationSimulator: React.FC = () => {
   const [traceViewMode, setTraceViewMode] = useState<'step' | 'panorama'>('step');
   const [showPromptInspector, setShowPromptInspector] = useState<boolean>(false);
   const [inspectedNodeId, setInspectedNodeId] = useState<string | null>(null);
+  const [analyzedCandidateId, setAnalyzedCandidateId] = useState<string | null>(null);
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
@@ -71,6 +83,32 @@ export const NavigationSimulator: React.FC = () => {
 
   const maxSteps = navResult.steps.length;
   const currentStep: NavigationStep | undefined = navResult.steps[activeStepIndex];
+
+  // Resolve which candidate in currentStep is focused in the Decision Step Analyzer
+  const analyzedCandidate: CandidateBranch | undefined = useMemo(() => {
+    if (!currentStep || currentStep.candidates.length === 0) return undefined;
+    if (analyzedCandidateId) {
+      const found = currentStep.candidates.find((c) => c.nodeId === analyzedCandidateId);
+      if (found) return found;
+    }
+    if (inspectedNodeId) {
+      const found = currentStep.candidates.find((c) => c.nodeId === inspectedNodeId);
+      if (found) return found;
+    }
+    return currentStep.candidates[0];
+  }, [currentStep, analyzedCandidateId, inspectedNodeId]);
+
+  // Resolve reference comparison candidate (if user selected Rank #1, compare against Rank #2; otherwise compare against Rank #1)
+  const comparisonCandidate: CandidateBranch | undefined = useMemo(() => {
+    if (!currentStep || currentStep.candidates.length === 0 || !analyzedCandidate) {
+      return undefined;
+    }
+    const topWinner = currentStep.candidates[0];
+    if (analyzedCandidate.nodeId === topWinner.nodeId) {
+      return currentStep.candidates[1] || topWinner;
+    }
+    return topWinner;
+  }, [currentStep, analyzedCandidate]);
 
   // Auto-play timer for real-time D3 trace animation
   useEffect(() => {
@@ -90,7 +128,10 @@ export const NavigationSimulator: React.FC = () => {
   // Build annotated hierarchy data for D3 tree layout
   const { hierarchyRootData, nodeLookupMap } = useMemo(() => {
     const effectiveMaxStepIdx = traceViewMode === 'panorama' ? maxSteps - 1 : activeStepIndex;
-    const candidateMap = new Map<string, { stepIdx: number; cand: CandidateBranch; isSelected: boolean }>();
+    const candidateMap = new Map<
+      string,
+      { stepIdx: number; cand: CandidateBranch; isSelected: boolean }
+    >();
 
     navResult.steps.forEach((step, sIdx) => {
       if (sIdx <= effectiveMaxStepIdx) {
@@ -98,7 +139,7 @@ export const NavigationSimulator: React.FC = () => {
           candidateMap.set(cand.nodeId, {
             stepIdx: sIdx,
             cand,
-            isSelected: step.selectedNodeIds.includes(cand.nodeId),
+            isSelected: step.selectedNodeIds.includes(cand.nodeId)
           });
         });
       }
@@ -143,7 +184,7 @@ export const NavigationSimulator: React.FC = () => {
         rawLogit: evalInfo?.cand.rawLogit,
         probability: evalInfo?.cand.normalizedProbability,
         rationale: evalInfo?.cand.rationale,
-        children: convertedChildren,
+        children: convertedChildren
       };
       lookup.set(node.id, datum);
       return datum;
@@ -157,7 +198,7 @@ export const NavigationSimulator: React.FC = () => {
       summaryZh: `接收用户查询：「${queryInput}」，无需向量数据库索引，直接对文档树逐层执行单步前向传播打分。`,
       keywords: ['Zero-Token', 'Shared-Context', 'Beam Search'],
       status: 'router',
-      children: currentCorpus.rootNodes.map((rn) => convertNode(rn, 1)),
+      children: currentCorpus.rootNodes.map((rn) => convertNode(rn, 1))
     };
     lookup.set(rootDatum.id, rootDatum);
 
@@ -168,7 +209,6 @@ export const NavigationSimulator: React.FC = () => {
     if (inspectedNodeId && nodeLookupMap.has(inspectedNodeId)) {
       return nodeLookupMap.get(inspectedNodeId)!;
     }
-    // Default to top selected candidate in current step
     const currentTopId = currentStep?.selectedNodeIds[0];
     if (currentTopId && nodeLookupMap.has(currentTopId)) {
       return nodeLookupMap.get(currentTopId)!;
@@ -218,7 +258,7 @@ export const NavigationSimulator: React.FC = () => {
       { depth: 1, label: 'L1: 领域层 (Domain)' },
       { depth: 2, label: 'L2: 文档层 (Step 1)' },
       { depth: 3, label: 'L3: 章节层 (Step 2)' },
-      { depth: 4, label: 'L4: 段落层 (Step 3)' },
+      { depth: 4, label: 'L4: 段落层 (Step 3)' }
     ];
 
     const depthPositions = new Map<number, number>();
@@ -260,7 +300,10 @@ export const NavigationSimulator: React.FC = () => {
 
     // Horizontal cubic bezier link generator
     const linkGenerator = d3
-      .linkHorizontal<d3.HierarchyPointLink<TraceTreeDatum>, d3.HierarchyPointNode<TraceTreeDatum>>()
+      .linkHorizontal<
+        d3.HierarchyPointLink<TraceTreeDatum>,
+        d3.HierarchyPointNode<TraceTreeDatum>
+      >()
       .x((d) => d.y)
       .y((d) => d.x);
 
@@ -311,6 +354,7 @@ export const NavigationSimulator: React.FC = () => {
       .style('cursor', 'pointer')
       .on('click', (_event, d) => {
         setInspectedNodeId(d.data.id);
+        setAnalyzedCandidateId(d.data.id);
         if (d.depth >= 2 && d.depth - 2 < maxSteps) {
           setActiveStepIndex(d.depth - 2);
         }
@@ -369,7 +413,12 @@ export const NavigationSimulator: React.FC = () => {
       .attr('text-anchor', (d) => (d.children && d.children.length > 0 ? 'middle' : 'start'))
       .attr('fill', (d) => {
         const st = d.data.status;
-        if (st === 'target-hit' || st === 'active-beam' || st === 'domain-active' || st === 'router') {
+        if (
+          st === 'target-hit' ||
+          st === 'active-beam' ||
+          st === 'domain-active' ||
+          st === 'router'
+        ) {
           return 'var(--app-text)';
         }
         return 'var(--app-text-muted)';
@@ -415,7 +464,10 @@ export const NavigationSimulator: React.FC = () => {
 
   const handleZoom = (factor: number) => {
     if (!svgRef.current || !zoomBehaviorRef.current) return;
-    d3.select(svgRef.current).transition().duration(220).call(zoomBehaviorRef.current.scaleBy, factor);
+    d3.select(svgRef.current)
+      .transition()
+      .duration(220)
+      .call(zoomBehaviorRef.current.scaleBy, factor);
   };
 
   const handleResetZoom = () => {
@@ -431,6 +483,7 @@ export const NavigationSimulator: React.FC = () => {
     setQueryInput(pq.query);
     setActiveStepIndex(0);
     setInspectedNodeId(null);
+    setAnalyzedCandidateId(null);
     if (pq.category.includes('维基')) setSelectedCorpusId('wikipedia');
     else if (pq.category.includes('IBM')) setSelectedCorpusId('ibm-cloud');
     else if (pq.category.includes('政策')) setSelectedCorpusId('multidoc');
@@ -440,6 +493,7 @@ export const NavigationSimulator: React.FC = () => {
     setIsAutoPlaying(false);
     if (activeStepIndex < maxSteps - 1) {
       setActiveStepIndex((prev) => prev + 1);
+      setAnalyzedCandidateId(null);
     }
   };
 
@@ -447,17 +501,20 @@ export const NavigationSimulator: React.FC = () => {
     setIsAutoPlaying(false);
     if (activeStepIndex > 0) {
       setActiveStepIndex((prev) => prev - 1);
+      setAnalyzedCandidateId(null);
     }
   };
 
   const handleReset = () => {
     setIsAutoPlaying(false);
     setActiveStepIndex(0);
+    setAnalyzedCandidateId(null);
   };
 
   const handleRunToEnd = () => {
     setIsAutoPlaying(false);
     setActiveStepIndex(maxSteps - 1);
+    setAnalyzedCandidateId(null);
   };
 
   const toggleAutoPlay = () => {
@@ -482,14 +539,14 @@ export const NavigationSimulator: React.FC = () => {
               <Cpu className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 flex-wrap">
                 <span>DecisionRAG 分层决策导航实验台</span>
                 <span className="px-2 py-0.5 text-[10px] font-mono bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
-                  D3.js 实时链路追踪 + 单步前向模拟
+                  D3.js 实时链路追踪 + 决策步骤解析器
                 </span>
               </h2>
               <p className="text-xs text-slate-400">
-                亲眼观察「免检索器」决策模型如何在无显式向量索引的情况下，通过单步 Logits 打分、束搜索剪枝与共享上下文对比，在文档层级树中实时路由定位目标正文。
+                亲眼观察「免检索器」决策模型如何在无显式向量索引的情况下，通过单步 Logits 打分、四维相关性权重分解与共享上下文对比，在文档层级树中实时路由定位目标正文。
               </p>
             </div>
           </div>
@@ -512,7 +569,7 @@ export const NavigationSimulator: React.FC = () => {
         <div className="space-y-2 pt-2 border-t border-slate-800/80">
           <span className="text-xs text-slate-400 flex items-center gap-1 font-medium">
             <Sparkles className="w-3 h-3 text-emerald-400" />
-            <span>推荐预设测试问题（点击快速载入并刷新 D3 路由树）：</span>
+            <span>推荐预设测试问题（点击快速载入并刷新 D3 路由树与决策步骤解析器）：</span>
           </span>
           <div className="flex flex-wrap gap-2">
             {PRESET_QUERIES.map((pq) => (
@@ -544,6 +601,7 @@ export const NavigationSimulator: React.FC = () => {
                 setIsAutoPlaying(false);
                 setQueryInput(e.target.value);
                 setActiveStepIndex(0);
+                setAnalyzedCandidateId(null);
               }}
               placeholder="输入查询内容，例如：石墨烯哪一年获诺贝尔奖？"
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60"
@@ -560,6 +618,7 @@ export const NavigationSimulator: React.FC = () => {
                 setSelectedCorpusId(e.target.value);
                 setActiveStepIndex(0);
                 setInspectedNodeId(null);
+                setAnalyzedCandidateId(null);
               }}
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500/60 cursor-pointer"
             >
@@ -588,6 +647,7 @@ export const NavigationSimulator: React.FC = () => {
                   setIsAutoPlaying(false);
                   setBeamWidth(Number(e.target.value));
                   setActiveStepIndex(0);
+                  setAnalyzedCandidateId(null);
                 }}
                 className="w-full accent-emerald-500 cursor-pointer"
               />
@@ -611,6 +671,7 @@ export const NavigationSimulator: React.FC = () => {
               onClick={() => {
                 setIsAutoPlaying(false);
                 setActiveStepIndex(idx);
+                setAnalyzedCandidateId(null);
               }}
               className={`px-3 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                 activeStepIndex === idx
@@ -681,7 +742,7 @@ export const NavigationSimulator: React.FC = () => {
         </div>
       </div>
 
-      {/* NEW: D3.js Interactive Hierarchy & Query Routing Trace Graph */}
+      {/* D3.js Interactive Hierarchy & Query Routing Trace Graph */}
       <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-800 pb-3">
           <div>
@@ -852,6 +913,410 @@ export const NavigationSimulator: React.FC = () => {
         </div>
       </div>
 
+      {/* NEW: 决策步骤解析器 (Hop-by-Hop Decision Step Analyzer) */}
+      {currentStep && analyzedCandidate && (
+        <div
+          id="decision-step-analyzer"
+          className="p-6 rounded-2xl bg-slate-900 border border-emerald-500/40 shadow-2xl space-y-6"
+        >
+          {/* Analyzer Header & Hop Selector */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Sliders className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-lg font-bold text-white">
+                  决策步骤解析器 (Decision Step Analyzer)
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  跳转点 #{currentStep.stepIndex} · {currentStep.levelName}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">
+                深度拆解每个文档层级跳转点（Hop Point）中，决策模型在共享上下文窗口内对候选节点的相关性得分权重构成、词元注意力分布与同级 PK 胜出依据。
+              </p>
+            </div>
+
+            {/* Hop Point Switcher Pills */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {navResult.steps.map((st, sIdx) => (
+                <button
+                  key={st.stepIndex}
+                  type="button"
+                  onClick={() => {
+                    setIsAutoPlaying(false);
+                    setActiveStepIndex(sIdx);
+                    setAnalyzedCandidateId(null);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeStepIndex === sIdx
+                      ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-bold'
+                      : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  <span>跳转点 #{st.stepIndex}:</span>
+                  <span>{st.levelName.split(' ')[0]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Hop-Level Quantitative Summary Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[11px] text-slate-400 block">首位胜出边际 (ΔLogit 1st vs 2nd)</span>
+              <span className="text-lg font-mono font-bold text-emerald-400 mt-0.5 block">
+                +{currentStep.decisionSummary.logitGapTopVsRunnerUp.toFixed(2)}
+              </span>
+              <span className="text-[10px] text-slate-500">
+                《{currentStep.decisionSummary.topWinnerTitleZh.slice(0, 8)}》vs 次位
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[11px] text-slate-400 block">
+                束内累计置信度 (Top-{beamWidth} Softmax)
+              </span>
+              <span className="text-lg font-mono font-bold text-teal-400 mt-0.5 block">
+                {(currentStep.decisionSummary.beamConfidenceShare * 100).toFixed(1)}%
+              </span>
+              <span className="text-[10px] text-slate-500">
+                保留分支占全部候选概率和
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[11px] text-slate-400 block">共享上下文信噪比 (Context SNR)</span>
+              <span className="text-lg font-mono font-bold text-white mt-0.5 block">
+                {currentStep.decisionSummary.contextSignalToNoiseRatio.toFixed(2)}x
+              </span>
+              <span className="text-[10px] text-emerald-400">
+                首选信号 / 淘汰噪声比值
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[11px] text-slate-400 block">当前跳转决策熵 (Shannon Entropy)</span>
+              <span className="text-lg font-mono font-bold text-white mt-0.5 block">
+                {currentStep.decisionSummary.shannonEntropyBits.toFixed(2)} bits
+              </span>
+              <span className="text-[10px] text-slate-500">
+                熵越低代表路由指向越明确
+              </span>
+            </div>
+          </div>
+
+          {/* Candidate Branch Selector Tabs inside current Hop */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span className="font-semibold">
+                选择当前跳转点待剖析的候选节点（点击切换查看其得分权重拆解）：
+              </span>
+              <span className="font-mono text-emerald-400">
+                父级上下文：{analyzedCandidate.parentNodeTitleZh || currentStep.parentNodeTitle}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {currentStep.candidates.map((cand, idx) => {
+                const isFocused = analyzedCandidate.nodeId === cand.nodeId;
+                const isPromoted = currentStep.selectedNodeIds.includes(cand.nodeId);
+                const optLetter = String.fromCharCode(65 + idx);
+
+                return (
+                  <button
+                    key={cand.nodeId}
+                    type="button"
+                    onClick={() => {
+                      setAnalyzedCandidateId(cand.nodeId);
+                      setInspectedNodeId(cand.nodeId);
+                    }}
+                    className={`px-3 py-2 rounded-xl border text-xs transition-all cursor-pointer flex items-center gap-2 ${
+                      isFocused
+                        ? 'bg-emerald-500/20 border-emerald-500 text-white shadow-md ring-1 ring-emerald-500/40 font-semibold'
+                        : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    <span
+                      className={`w-5 h-5 rounded font-mono text-[11px] font-bold flex items-center justify-center ${
+                        isPromoted
+                          ? 'bg-emerald-500 text-slate-950'
+                          : 'bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {optLetter}
+                    </span>
+                    <span>{cand.titleZh}</span>
+                    <span className="font-mono text-[11px] text-emerald-400">
+                      (L:{cand.rawLogit.toFixed(2)} | {(cand.normalizedProbability * 100).toFixed(1)}%)
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Main 2-Column Breakdown: 4-Dimension Relevance Weights + Token Attention & Sibling PK */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Column: 4-Dimension Relevance Score Weight Breakdown */}
+            <div className="lg:col-span-7 p-5 rounded-xl bg-slate-950/90 border border-slate-800 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-emerald-400" />
+                  <h4 className="text-sm font-bold text-white">
+                    相关性得分四维权重分解：《{analyzedCandidate.titleZh}》
+                  </h4>
+                </div>
+                <span className="text-xs font-mono font-bold text-emerald-400">
+                  总得分 z = {analyzedCandidate.rawLogit.toFixed(2)}
+                </span>
+              </div>
+
+              {/* Stacked Proportional Weight Bar */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[11px] text-slate-400">
+                  <span>各维度对当前节点 Logit 得分的贡献占比</span>
+                  <span className="font-mono">
+                    关键词 {analyzedCandidate.decisionBreakdown.dimensionShares.keywordPct}% · 标题{' '}
+                    {analyzedCandidate.decisionBreakdown.dimensionShares.titlePct}% · 摘要{' '}
+                    {analyzedCandidate.decisionBreakdown.dimensionShares.contextPct}% · 先验/叶粒度{' '}
+                    {analyzedCandidate.decisionBreakdown.dimensionShares.priorAndLeafPct}%
+                  </span>
+                </div>
+                <div className="w-full h-3 rounded-full bg-slate-900 border border-slate-800 overflow-hidden flex">
+                  <div
+                    className="h-full bg-emerald-500 transition-all duration-500"
+                    style={{
+                      width: `${analyzedCandidate.decisionBreakdown.dimensionShares.keywordPct}%`
+                    }}
+                    title={`关键词精准对齐权重: ${analyzedCandidate.decisionBreakdown.dimensionShares.keywordPct}%`}
+                  />
+                  <div
+                    className="h-full bg-teal-400 transition-all duration-500"
+                    style={{
+                      width: `${analyzedCandidate.decisionBreakdown.dimensionShares.titlePct}%`
+                    }}
+                    title={`层级标题语义权重: ${analyzedCandidate.decisionBreakdown.dimensionShares.titlePct}%`}
+                  />
+                  <div
+                    className="h-full bg-cyan-400 transition-all duration-500"
+                    style={{
+                      width: `${analyzedCandidate.decisionBreakdown.dimensionShares.contextPct}%`
+                    }}
+                    title={`上下文摘要交叉注意力权重: ${analyzedCandidate.decisionBreakdown.dimensionShares.contextPct}%`}
+                  />
+                  <div
+                    className="h-full bg-amber-500/80 transition-all duration-500"
+                    style={{
+                      width: `${analyzedCandidate.decisionBreakdown.dimensionShares.priorAndLeafPct}%`
+                    }}
+                    title={`结构先验与叶节点粒度增益: ${analyzedCandidate.decisionBreakdown.dimensionShares.priorAndLeafPct}%`}
+                  />
+                </div>
+              </div>
+
+              {/* 4 Detailed Dimension Weight Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-emerald-400 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span>1. 关键词/实体对齐权重 (w_kw)</span>
+                    </span>
+                    <span className="font-mono font-bold text-white">
+                      +{analyzedCandidate.decisionBreakdown.keywordWeight.toFixed(2)} (
+                      {analyzedCandidate.decisionBreakdown.dimensionShares.keywordPct}%)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    查询中的核心实体或专业术语与节点标签硬对齐产生的注意力激励。
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-teal-300 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-teal-400" />
+                      <span>2. 层级标题语义权重 (w_title)</span>
+                    </span>
+                    <span className="font-mono font-bold text-white">
+                      +{analyzedCandidate.decisionBreakdown.titleWeight.toFixed(2)} (
+                      {analyzedCandidate.decisionBreakdown.dimensionShares.titlePct}%)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    查询意图与文档/章节/段落标题《{analyzedCandidate.titleZh}》的高层主题相关性。
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-cyan-300 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                      <span>3. 上下文摘要交叉注意力 (w_ctx)</span>
+                    </span>
+                    <span className="font-mono font-bold text-white">
+                      +{analyzedCandidate.decisionBreakdown.contextSummaryWeight.toFixed(2)} (
+                      {analyzedCandidate.decisionBreakdown.dimensionShares.contextPct}%)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    单次前向传播中，查询词元对当前候选摘要上下文的深层语义交互得分。
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-amber-300 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-500" />
+                      <span>4. 结构先验与叶粒度增益 (w_prior)</span>
+                    </span>
+                    <span className="font-mono font-bold text-white">
+                      +
+                      {(
+                        analyzedCandidate.decisionBreakdown.priorWeight +
+                        analyzedCandidate.decisionBreakdown.leafSpecificityWeight
+                      ).toFixed(2)}{' '}
+                      ({analyzedCandidate.decisionBreakdown.dimensionShares.priorAndLeafPct}%)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    树结构基础先验 (+{analyzedCandidate.decisionBreakdown.priorWeight.toFixed(2)}) 与叶段落证据特异性加成 (+
+                    {analyzedCandidate.decisionBreakdown.leafSpecificityWeight.toFixed(2)})。
+                  </p>
+                </div>
+              </div>
+
+              {/* Exact Mathematical Formula Verification Box */}
+              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 font-mono text-[11px] text-slate-300 flex flex-wrap items-center justify-between gap-2">
+                <span>
+                  z(y | q, C_shared) = {analyzedCandidate.decisionBreakdown.keywordWeight.toFixed(2)} (w_kw) +{' '}
+                  {analyzedCandidate.decisionBreakdown.titleWeight.toFixed(2)} (w_title) +{' '}
+                  {analyzedCandidate.decisionBreakdown.contextSummaryWeight.toFixed(2)} (w_ctx) +{' '}
+                  {(
+                    analyzedCandidate.decisionBreakdown.priorWeight +
+                    analyzedCandidate.decisionBreakdown.leafSpecificityWeight
+                  ).toFixed(2)}{' '}
+                  (w_prior) ={' '}
+                  <strong className="text-emerald-400">
+                    {analyzedCandidate.rawLogit.toFixed(2)}
+                  </strong>
+                </span>
+                <span className="text-teal-400 font-bold">
+                  ⇒ Softmax P = {(analyzedCandidate.normalizedProbability * 100).toFixed(1)}%
+                </span>
+              </div>
+            </div>
+
+            {/* Right Column: Token-Level Attention Signals & Sibling PK Attribution */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+              {/* Token-Level Attention Signals */}
+              <div className="p-5 rounded-xl bg-slate-950/90 border border-slate-800 space-y-3 flex-1">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Target className="w-4 h-4 text-emerald-400" />
+                    <span>查询词元 × 节点上下文注意力激活权重</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    共 {analyzedCandidate.decisionBreakdown.tokenSignals.length} 项激活信号
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {analyzedCandidate.decisionBreakdown.tokenSignals.map((sig, sIdx) => (
+                    <div
+                      key={sIdx}
+                      className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                            {sig.token}
+                          </span>
+                          <span className="text-[11px] text-slate-400 truncate max-w-[165px]">
+                            {sig.matchedTarget}
+                          </span>
+                        </div>
+                        <span className="font-mono text-[11px] font-bold text-emerald-400">
+                          α={(sig.weight * 100).toFixed(0)}% (+{sig.logitContribution.toFixed(1)})
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400"
+                          style={{ width: `${Math.round(sig.weight * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Shared-Context Sibling PK Attribution Card */}
+              {comparisonCandidate && (
+                <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-emerald-300">
+                    <span className="flex items-center gap-1.5">
+                      <Scale className="w-4 h-4 text-emerald-400" />
+                      <span>同级共享上下文横向 PK 归因</span>
+                    </span>
+                    <span className="font-mono text-[11px]">
+                      Rank #{analyzedCandidate.rank} vs Rank #{comparisonCandidate.rank}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {analyzedCandidate.rank === 1 ? (
+                      <>
+                        首选节点《<strong>{analyzedCandidate.titleZh}</strong>》相比次位《
+                        <strong>{comparisonCandidate.titleZh}</strong>》高出{' '}
+                        <span className="font-mono font-bold text-emerald-400">
+                          +{(analyzedCandidate.rawLogit - comparisonCandidate.rawLogit).toFixed(2)} Logit
+                        </span>
+                        （相对概率{' '}
+                        <span className="font-mono font-bold text-emerald-400">
+                          {(analyzedCandidate.normalizedProbability * 100).toFixed(1)}%
+                        </span>{' '}
+                        vs{' '}
+                        <span className="font-mono">
+                          {(comparisonCandidate.normalizedProbability * 100).toFixed(1)}%
+                        </span>
+                        ），因此在当前跳转点被决策模型果断选中向下展开。
+                      </>
+                    ) : (
+                      <>
+                        当前检视节点《<strong>{analyzedCandidate.titleZh}</strong>》相比首选《
+                        <strong>{comparisonCandidate.titleZh}</strong>》落后{' '}
+                        <span className="font-mono font-bold text-amber-400">
+                          {(analyzedCandidate.rawLogit - comparisonCandidate.rawLogit).toFixed(2)} Logit
+                        </span>
+                        （相对概率仅{' '}
+                        <span className="font-mono font-bold text-amber-400">
+                          {(analyzedCandidate.normalizedProbability * 100).toFixed(1)}%
+                        </span>{' '}
+                        vs 首选{' '}
+                        <span className="font-mono">
+                          {(comparisonCandidate.normalizedProbability * 100).toFixed(1)}%
+                        </span>
+                        ），
+                        {currentStep.selectedNodeIds.includes(analyzedCandidate.nodeId)
+                          ? `因束宽 B=${beamWidth} 仍被保留在候选束内作为备选路径。`
+                          : `超出束宽 B=${beamWidth} 阈值被当场剪枝，省去其下游子树的全部计算开销。`}
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Step Decision Conclusion Banner */}
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+            <strong className="text-emerald-400">📌 当前跳转点路由结论：</strong>
+            {currentStep.decisionSummary.hopConclusionZh}
+          </div>
+        </div>
+      )}
+
       {/* Step Visualization Area */}
       {currentStep && (
         <div className="space-y-6">
@@ -868,7 +1333,8 @@ export const NavigationSimulator: React.FC = () => {
                   </h3>
                 </div>
                 <p className="text-xs text-slate-400 mt-1">
-                  当前父节点范围：<span className="text-slate-200 font-medium">{currentStep.parentNodeTitle}</span>
+                  当前父节点范围：
+                  <span className="text-slate-200 font-medium">{currentStep.parentNodeTitle}</span>
                 </p>
               </div>
 
@@ -877,7 +1343,9 @@ export const NavigationSimulator: React.FC = () => {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 cursor-pointer self-start sm:self-auto"
               >
                 <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{showPromptInspector ? '隐藏输入 Prompt' : '检查单步 Prompt 与 Logits'}</span>
+                <span>
+                  {showPromptInspector ? '隐藏输入 Prompt' : '检查单步 Prompt 与 Logits'}
+                </span>
               </button>
             </div>
 
@@ -903,7 +1371,7 @@ export const NavigationSimulator: React.FC = () => {
             {/* Candidate Branches Grid */}
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span>候选分支 ({currentStep.candidates.length} 个选项横向对比)</span>
+                <span>候选分支 ({currentStep.candidates.length} 个选项横向对比，点击卡片可在上方决策解析器中检视详细权重)</span>
                 <span className="text-emerald-400">
                   束宽 B={beamWidth}，保留得分前 {Math.min(beamWidth, currentStep.candidates.length)} 项
                 </span>
@@ -912,23 +1380,31 @@ export const NavigationSimulator: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {currentStep.candidates.map((cand, cIdx) => {
                   const isSelected = currentStep.selectedNodeIds.includes(cand.nodeId);
+                  const isAnalyzed = analyzedCandidate?.nodeId === cand.nodeId;
                   const optionLetter = String.fromCharCode(65 + cIdx);
 
                   return (
                     <div
                       key={cand.nodeId}
-                      onClick={() => setInspectedNodeId(cand.nodeId)}
+                      onClick={() => {
+                        setInspectedNodeId(cand.nodeId);
+                        setAnalyzedCandidateId(cand.nodeId);
+                      }}
                       className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-slate-900/90 border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/30'
-                          : 'bg-slate-950/60 border-slate-800/80 opacity-60'
+                        isAnalyzed
+                          ? 'bg-slate-900 border-emerald-400 shadow-lg shadow-emerald-500/15 ring-2 ring-emerald-500/40'
+                          : isSelected
+                          ? 'bg-slate-900/90 border-emerald-500/60 shadow-lg shadow-emerald-500/10'
+                          : 'bg-slate-950/60 border-slate-800/80 opacity-65 hover:opacity-100'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
                           <span
                             className={`w-6 h-6 rounded-md font-mono text-xs font-bold flex items-center justify-center ${
-                              isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'
+                              isSelected
+                                ? 'bg-emerald-500 text-slate-950'
+                                : 'bg-slate-800 text-slate-400'
                             }`}
                           >
                             {optionLetter}

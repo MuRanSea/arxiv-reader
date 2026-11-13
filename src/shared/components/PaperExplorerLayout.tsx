@@ -34,7 +34,7 @@ const VIEWPORT_WIDE_BREAKPOINT = 'paper-viewport-section max-w-7xl mx-auto px-4 
 const VIEWPORT_MEDIUM_BREAKPOINT = 'paper-viewport-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8';
 const VIEWPORT_READING_BREAKPOINT = 'paper-viewport-section max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8';
 
-interface PaperExplorerLayoutProps {
+export interface PaperExplorerLayoutProps {
   paper?: UniversalPaperData;
   data?: UniversalPaperData;
   simulatorComponent?: React.ReactNode;
@@ -231,9 +231,9 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
           </div>
         </div>
 
-        {/* Main Navbar */}
-        <div className={`${HEADER_CONTAINER_BREAKPOINT} py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4`}>
-          <div className="flex items-center gap-3">
+        {/* Title & Global Reading Controls Row */}
+        <div className={`${HEADER_CONTAINER_BREAKPOINT} py-3 flex flex-wrap items-center justify-between gap-4`}>
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             {resolvedOnBack && (
               <button
                 onClick={resolvedOnBack}
@@ -247,90 +247,184 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
               <Cpu className="w-5 h-5 text-white" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg font-bold text-white tracking-tight">
+                <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
                   {paper.systemTitleZh}
                 </h1>
-                <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">
+                <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30 flex-shrink-0">
                   中文完整精读
                 </span>
               </div>
-              <p className="text-xs text-slate-400 line-clamp-1">{paper.titleEn}</p>
+              <p className="text-xs text-slate-400 truncate">{paper.titleEn}</p>
             </div>
           </div>
 
-          {/* 5 Functional Modules Navigation */}
-          <nav
-            className="flex items-center overflow-x-auto pb-1 md:pb-0 gap-1 scrollbar-none"
-            aria-label="主要功能导航"
-          >
-            <button
-              onClick={() => setCurrentView('beginner')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
-                currentView === 'beginner'
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>5分钟速通导览</span>
-            </button>
+          <div className="flex items-center gap-2.5 flex-wrap flex-shrink-0">
+            {currentView === 'reader' && (
+              <div
+                className="inline-flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-xl p-0.5"
+                role="group"
+                aria-label="阅读语言切换"
+              >
+                <Globe className="w-3.5 h-3.5 text-slate-400 ml-2 mr-0.5" />
+                <button
+                  type="button"
+                  onClick={() => setLangMode('zh')}
+                  aria-pressed={langMode === 'zh'}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                    langMode === 'zh'
+                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  中文译本
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangMode('bilingual')}
+                  aria-pressed={langMode === 'bilingual'}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                    langMode === 'bilingual'
+                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  双语对照
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangMode('en')}
+                  aria-pressed={langMode === 'en'}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                    langMode === 'en'
+                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  英文原版
+                </button>
+              </div>
+            )}
 
-            <button
-              onClick={() => setCurrentView('reader')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
-                currentView === 'reader'
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
+            <div
+              className="inline-flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-xl p-0.5"
+              role="group"
+              aria-label="全局字号调节"
             >
-              <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
-              <span>全文精读 &amp; 解析</span>
-            </button>
+              <span className="text-slate-400 pl-2 pr-1 text-xs font-medium">字号:</span>
+              <button
+                type="button"
+                onClick={() => handleFontSizeChange('sm')}
+                aria-pressed={fontSize === 'sm'}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  fontSize === 'sm'
+                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                小
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFontSizeChange('md')}
+                aria-pressed={fontSize === 'md'}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  fontSize === 'md'
+                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                中
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFontSizeChange('lg')}
+                aria-pressed={fontSize === 'lg'}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  fontSize === 'lg'
+                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                大
+              </button>
+            </div>
 
-            <button
-              onClick={() => setCurrentView('simulator')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
-                currentView === 'simulator'
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Cpu className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{paper.simulatorTabLabel}</span>
-            </button>
-
-            <button
-              onClick={() => setCurrentView('comparison')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
-                currentView === 'comparison'
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>范式与基准对比</span>
-            </button>
-
-            <button
-              onClick={() => setCurrentView('glossary')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
-                currentView === 'glossary'
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
-              <span>核心概念词典</span>
-            </button>
-          </nav>
+            <ThemeToggle />
+          </div>
         </div>
 
-        {/* Control Bar: Search, Language, Font Size, Theme */}
-        <div className="bg-slate-950/60 border-t border-slate-800/80 px-4 sm:px-6 py-2">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="relative flex-1 min-w-[200px] max-w-md">
+        {/* Dedicated 5-Module Navigation & Search Bar */}
+        <div className="bg-slate-950/60 border-t border-slate-800/80 py-2">
+          <div className={`${HEADER_CONTAINER_BREAKPOINT} flex flex-wrap items-center justify-between gap-3 text-xs`}>
+            {/* 5 Functional Modules Navigation — flex-wrap ensures zero clipping at all widths */}
+            <nav
+              className="flex flex-wrap items-center gap-1.5"
+              aria-label="主要功能导航"
+            >
+              <button
+                onClick={() => setCurrentView('beginner')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
+                  currentView === 'beginner'
+                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                <span>5分钟速通导览</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('reader')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
+                  currentView === 'reader'
+                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+                <span>全文精读 &amp; 解析</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('simulator')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
+                  currentView === 'simulator'
+                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <Cpu className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{paper.simulatorTabLabel}</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('comparison')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
+                  currentView === 'comparison'
+                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>范式与基准对比</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('glossary')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
+                  currentView === 'glossary'
+                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
+                <span>核心概念词典</span>
+              </button>
+            </nav>
+
+            <div className="relative w-full sm:w-64 md:w-72 flex-shrink-0">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -339,100 +433,6 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
                 placeholder="搜索本论文章节、概念、公式或实验..."
                 className="w-full bg-slate-900/80 border border-slate-700/60 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/40"
               />
-            </div>
-
-            <div className="flex items-center gap-3 flex-wrap">
-              {currentView === 'reader' && (
-                <div
-                  className="inline-flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-xl p-0.5"
-                  role="group"
-                  aria-label="阅读语言切换"
-                >
-                  <Globe className="w-3.5 h-3.5 text-slate-400 ml-2 mr-0.5" />
-                  <button
-                    type="button"
-                    onClick={() => setLangMode('zh')}
-                    aria-pressed={langMode === 'zh'}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      langMode === 'zh'
-                        ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    中文译本
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setLangMode('bilingual')}
-                    aria-pressed={langMode === 'bilingual'}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      langMode === 'bilingual'
-                        ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    双语对照
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setLangMode('en')}
-                    aria-pressed={langMode === 'en'}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      langMode === 'en'
-                        ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    英文原版
-                  </button>
-                </div>
-              )}
-
-              <div
-                className="inline-flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-xl p-0.5"
-                role="group"
-                aria-label="全局字号调节"
-              >
-                <span className="text-slate-400 pl-2 pr-1 text-xs font-medium">字号:</span>
-                <button
-                  type="button"
-                  onClick={() => handleFontSizeChange('sm')}
-                  aria-pressed={fontSize === 'sm'}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    fontSize === 'sm'
-                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  小
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFontSizeChange('md')}
-                  aria-pressed={fontSize === 'md'}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    fontSize === 'md'
-                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  中
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFontSizeChange('lg')}
-                  aria-pressed={fontSize === 'lg'}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    fontSize === 'lg'
-                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  大
-                </button>
-              </div>
-
-              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -1439,7 +1439,7 @@ export const PaperExplorerLayout: React.FC<PaperExplorerLayoutProps> = ({
           </div>
 
           <div className="pt-4 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500 text-[11px]">
-            <div>本交互式学习平台依据学者发表成果进行结构化中文翻译与教育型探索展示。</div>
+            <div>{paper.titleEn}</div>
             <div>
               {paper.arxivId} • {paper.venueBadge}
             </div>

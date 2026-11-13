@@ -12,6 +12,30 @@ import Gan2014App from './Generative-Adversarial-Nets/src/App.js';
 import Bert2018App from './BERT-Pre-training-of-Deep-Bidirectional-Transformers-for-Language-Understanding/src/App.js';
 import StableDiffusion2022App from './High-Resolution-Image-Synthesis-with-Latent-Diffusion-Models/src/App.js';
 import Gpt2020App from './Language-Models-are-Few-Shot-Learners-GPT/src/App.js';
+import Adam2014App from './Adam-A-Method-for-Stochastic-Optimization/src/App.js';
+import Resnet2015App from './Deep-Residual-Learning-for-Image-Recognition/src/App.js';
+import Zero2019App from './ZeRO-Memory-Optimizations-Toward-Training-Trillion-Parameter-Models/src/App.js';
+import Chinchilla2022App from './Training-Compute-Optimal-Large-Language-Models-Chinchilla/src/App.js';
+import Rope2021App from './RoFormer-Enhanced-Transformer-with-Rotary-Position-Embedding/src/App.js';
+import Qlora2023App from './QLoRA-Efficient-Finetuning-of-Quantized-LLMs/src/App.js';
+import FlashAttention2022App from './FlashAttention-Fast-and-Memory-Efficient-Exact-Attention-with-IO-Awareness/src/App.js';
+import Orca2022App from './Orca-A-Distributed-Serving-System-for-Transformer-Based-Generative-Models/src/App.js';
+import PagedAttention2023App from './Efficient-Memory-Management-for-Large-Language-Model-Serving-with-PagedAttention/src/App.js';
+import SpeculativeDecoding2022App from './Fast-Inference-from-Transformers-via-Speculative-Decoding/src/App.js';
+import Gptq2022App from './GPTQ-Accurate-Post-Training-Quantization-for-Generative-Pre-trained-Transformers/src/App.js';
+import DeepSeekV22024App from './DeepSeek-V2-A-Strong-Economical-and-Efficient-Mixture-of-Experts-Language-Model/src/App.js';
+import Rlhf2017App from './Deep-Reinforcement-Learning-from-Human-Preferences/src/App.js';
+import InstructGpt2022App from './Training-language-models-to-follow-instructions-with-human-feedback/src/App.js';
+import Dpo2023App from './Direct-Preference-Optimization-Your-Language-Model-is-Secretly-a-Reward-Model/src/App.js';
+import ConstitutionalAi2022App from './Constitutional-AI-Harmlessness-from-AI-Feedback/src/App.js';
+import React2022App from './ReAct-Synergizing-Reasoning-and-Acting-in-Language-Models/src/App.js';
+import DeepSeekR12025App from './DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/src/App.js';
+import Clip2021App from './Learning-Transferable-Visual-Models-From-Natural-Language-Supervision-CLIP/src/App.js';
+import Whisper2022App from './Robust-Speech-Recognition-via-Large-Scale-Weak-Supervision-Whisper/src/App.js';
+import Sam2023App from './Segment-Anything-SAM/src/App.js';
+import Llava2023App from './Visual-Instruction-Tuning-LLaVA/src/App.js';
+import Ddpm2020App from './Denoising-Diffusion-Probabilistic-Models-DDPM/src/App.js';
+import AlphaFold22021App from './Highly-accurate-protein-structure-prediction-with-AlphaFold/src/App.js';
 
 export type PaperItem = PaperRegistryItem;
 
@@ -500,5 +524,751 @@ export const REGISTERED_PAPERS: PaperRegistryItem[] = [
       '核心概念双解词典'
     ],
     component: Colbert2020App
+  },
+
+  // ==================== 第一支柱：训练得以发生 (Training & Scaling Foundations) ====================
+  {
+    id: 'adam-2014',
+    folderName: 'Adam-A-Method-for-Stochastic-Optimization',
+    titleZh: 'Adam：基于自适应矩估计的随机优化算法 (Adam & AdamW)',
+    titleEn: 'Adam: A Method for Stochastic Optimization',
+    arxivId: 'arXiv:1412.6980',
+    doi: 'https://arxiv.org/abs/1412.6980',
+    authors: ['Diederik P. Kingma', 'Jimmy Ba'],
+    affiliations: ['University of Amsterdam', 'University of Toronto'],
+    publishDate: 'ICLR 2015 (现代训练默认优化器)',
+    category: '训练与扩展定律',
+    tags: ['Adam / AdamW', '一阶动量 m_t', '二阶矩 v_t', '零偏置修正 1-β^t', '解耦权重衰减'],
+    status: 'active',
+    tldrZh:
+      '现代几乎所有深度学习与大语言模型训练跑的都是它或它的带权重衰减变体（AdamW）！通过同时追踪每个参数的一阶动量 m_t 与二阶未中心化方差 v_t，并引入关键的初始零偏置修正 1/(1-β^t)，以信噪比 m̂_t/(√v̂_t+ε) 自适应调节每个维度的更新步长。',
+    keyMetrics: [
+      { label: '被引用量与统治力', value: '180,000+ (全领域第一)', highlight: true },
+      { label: '每参数优化器状态', value: '8 Bytes (FP32 m_t, v_t)', highlight: true },
+      { label: 'LLM 黄金动量配置', value: 'β₁=0.9, β₂=0.95~0.999' },
+      { label: '非凸收敛加速比', value: '3.2x ~ 5.8x (vs SGD)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '中英双语精读解析',
+      'Adam / AdamW 矩估计与偏差修正实验台',
+      '多优化器收敛与显存对比',
+      '核心概念双解词典'
+    ],
+    component: Adam2014App
+  },
+  {
+    id: 'resnet-2015',
+    folderName: 'Deep-Residual-Learning-for-Image-Recognition',
+    titleZh: 'ResNet 深度残差学习：让千层深度神经网络得以训练的残差连接基石',
+    titleEn: 'Deep Residual Learning for Image Recognition',
+    arxivId: 'arXiv:1512.03385',
+    doi: 'https://arxiv.org/abs/1512.03385',
+    githubUrl: 'https://github.com/KaimingHe/deep-residual-networks',
+    authors: ['Kaiming He (何恺明)', 'Xiangyu Zhang (张祥雨)', 'Shaoqing Ren (任少卿)', 'Jian Sun (孙剑)'],
+    affiliations: ['Microsoft Research Asia (MSRA)'],
+    publishDate: 'CVPR 2016 Best Paper (AI引用之王)',
+    category: '训练与扩展定律',
+    tags: ['ResNet 残差连接', 'y = F(x) + x', '攻克深层退化问题', '梯度无损高速公路', 'Transformer 核心骨架'],
+    status: 'active',
+    tldrZh:
+      '深层网络（包括今日百层 Transformer）能叠起来，靠的就是每一层把输入加回去！针对深层普通网络难以拟合恒等变换导致的「退化现象」，引入零参数恒等捷径 y = F(x) + x，让反向传播梯度沿着单位矩阵 +I 无损直达浅层，首次将网络深度推向 152~1000 层！',
+    keyMetrics: [
+      { label: 'ImageNet Top-5 错误率', value: '3.57% (超越人类水平)', highlight: true },
+      { label: '最大成功训练深度', value: '152 层 ~ 1202 层', highlight: true },
+      { label: '算力开销 (vs VGG-19)', value: '减少 42% (11.3B FLOPs)' },
+      { label: '现代大模型渗透率', value: '100% (x + SubLayer(x))' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '中英双语精读解析',
+      'ResNet 恒等捷径与深层梯度流实验台',
+      'Plain vs ResNet 深度消融对比',
+      '核心概念双解词典'
+    ],
+    component: Resnet2015App
+  },
+  {
+    id: 'zero-2019',
+    folderName: 'ZeRO-Memory-Optimizations-Toward-Training-Trillion-Parameter-Models',
+    titleZh: 'ZeRO 零冗余优化器与分布式并行：突破万亿参数大模型训练显存墙 (DeepSpeed & Megatron-LM)',
+    titleEn: 'ZeRO: Memory Optimizations Toward Training Trillion Parameter Models',
+    arxivId: 'arXiv:1910.02054',
+    doi: 'https://arxiv.org/abs/1910.02054',
+    githubUrl: 'https://github.com/microsoft/DeepSpeed',
+    authors: ['Samyam Rajbhandari', 'Jeff Rasley', 'Olatunji Ruwase', 'Yuxiong He (何玉雄)', 'Mohammad Shoeybi (Megatron-LM)'],
+    affiliations: ['Microsoft DeepSpeed Team', 'NVIDIA Megatron-LM (1909.08053)'],
+    publishDate: 'SC 2020 (DeepSpeed & FSDP 核心)',
+    category: '训练与扩展定律',
+    tags: ['ZeRO-1/2/3 状态分片', 'DeepSpeed / PyTorch FSDP', '16Ψ 混合精度显存账本', 'Megatron 张量并行', '万亿参数训练'],
+    status: 'active',
+    tldrZh:
+      '多卡训练大模型得以发生的两大工程支柱！算清混合精度训练每参数 16Ψ 字节账本（其中 Adam 状态占 12Ψ），将优化器状态（ZeRO-1）、梯度（ZeRO-2）与参数（ZeRO-3）分片到 N_d 张数据并行卡上消除冗余副本；配合 Megatron-LM (1909.08053) 张量并行实现千亿至万亿模型训练！',
+    keyMetrics: [
+      { label: 'ZeRO-1/2/3 显存削减', value: '4x / 8x / N_d 倍线性缩减', highlight: true },
+      { label: '最大可训练模型规模', value: '1 Trillion+ (万亿参数)', highlight: true },
+      { label: 'ZeRO-1/2 额外通信代价', value: '0% (与标准DDP同为 2Ψ)' },
+      { label: '100B 模型 64卡单卡状态', value: '1600GB ➔ 25.0GB (ZeRO-3)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '16Ψ 显存账本与 3D 并行精读',
+      'ZeRO-1/2/3 分片与通信开销计算器',
+      'DDP vs ZeRO 分布式扩展对比',
+      '核心概念双解词典'
+    ],
+    component: Zero2019App
+  },
+  {
+    id: 'chinchilla-2022',
+    folderName: 'Training-Compute-Optimal-Large-Language-Models-Chinchilla',
+    titleZh: 'Chinchilla 算力最优扩展定律：颠覆大模型参数与训练数据配比法则',
+    titleEn: 'Training Compute-Optimal Large Language Models (Chinchilla)',
+    arxivId: 'arXiv:2203.15556',
+    doi: 'https://arxiv.org/abs/2203.15556',
+    authors: ['Jordan Hoffmann', 'Sebastian Borgeaud', 'Arthur Mensch', 'Elena Buchatskaya', 'Laurent Sifre'],
+    affiliations: ['DeepMind'],
+    publishDate: 'NeurIPS 2022 (买卡买数据黄金定律)',
+    category: '训练与扩展定律',
+    tags: ['Chinchilla Scaling Laws', 'D ≈ 20N 黄金配比', 'C ≈ 6ND 算力约束', '70B 击败 280B Gopher', '纠偏 Kaplan 定律'],
+    status: 'active',
+    tldrZh:
+      '买卡和买数据的比例全按这篇算！推翻此前盲目堆参数的 Kaplan 定律，通过对 400+ 模型拟合证明参数量 N 与训练 Token 数 D 必须【等比例同步放大】（每 1B 参数约需 20B Tokens）。据此训练的 70B Chinchilla（配 1.4T 数据）在同等算力下全面击败 4 倍大的 280B Gopher！',
+    keyMetrics: [
+      { label: '算力最优 Token/参数比', value: 'D ≈ 20 × N (黄金比例)', highlight: true },
+      { label: 'Chinchilla 70B MMLU', value: '67.5% (超 280B Gopher +7.6%)', highlight: true },
+      { label: '推理成本与显存节省', value: '直降 75% (4倍加速)' },
+      { label: '幂律缩放指数 (a ≈ b)', value: 'N_opt ∝ C^0.5, D_opt ∝ C^0.5' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'IsoFLOP 曲线与双幂律拟合精读',
+      'Chinchilla 算力预算与过训练权衡模拟器',
+      'GPT-3 / Gopher / Chinchilla 对比',
+      '核心概念双解词典'
+    ],
+    component: Chinchilla2022App
+  },
+  {
+    id: 'rope-2021',
+    folderName: 'RoFormer-Enhanced-Transformer-with-Rotary-Position-Embedding',
+    titleZh: 'RoPE 旋转位置编码：以复数平面旋转统一绝对与相对位置的大模型默认标准',
+    titleEn: 'RoFormer: Enhanced Transformer with Rotary Position Embedding (RoPE)',
+    arxivId: 'arXiv:2104.09864',
+    doi: 'https://arxiv.org/abs/2104.09864',
+    githubUrl: 'https://github.com/ZhuiyiTechnology/roformer',
+    authors: ['Jianlin Su (苏剑林)', 'Yu Lu', 'Shengfeng Pan', 'Ahmed Murtadha', 'Bo Wen', 'Yunfeng Liu'],
+    affiliations: ['Zhuiyi Technology (追一科技)'],
+    publishDate: '2021 (现代开源LLM位置编码唯一默认)',
+    category: '大模型架构',
+    tags: ['RoPE 旋转位置编码', '复数平面旋转 e^{imθ}', '绝对操作实现相对位置', '远程衰减包络', 'NTK/YaRN 长文本扩窗'],
+    status: 'active',
+    tldrZh:
+      '2021 年之后几乎所有现代大模型（LLaMA、Qwen、DeepSeek、Mistral、Gemma）的位置编码默认标准！将词向量的相邻两维视为复平面向量并按绝对位置 m 旋转 mθ 角，使点积注意力 (R_m q)^T (R_n k) = q^T R_{n-m} k 自动坍缩为仅依赖相对距离 (n-m)，完美兼容 KV Cache 与长上下文外推！',
+    keyMetrics: [
+      { label: '现代大模型采用率', value: '> 95% (事实唯一标准)', highlight: true },
+      { label: 'KV Cache 兼容开销', value: '0 重算 (O(N) 原位旋转)', highlight: true },
+      { label: '位置编码额外参数量', value: '0 参数 (纯正交旋转)' },
+      { label: '长文本 NTK/YaRN 外推', value: '4K ➔ 128K ~ 2M 窗口' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '复数旋转推导与远程衰减精读',
+      'RoPE 二维旋转夹角与 NTK 扩窗实验台',
+      '主流位置编码范式全景对比',
+      '核心概念双解词典'
+    ],
+    component: Rope2021App
+  },
+  {
+    id: 'qlora-2023',
+    folderName: 'QLoRA-Efficient-Finetuning-of-Quantized-LLMs',
+    titleZh: 'QLoRA 量化低秩微调：单张 48GB 显卡微调 65B 大模型的开源微调破局之作',
+    titleEn: 'QLoRA: Efficient Finetuning of Quantized LLMs',
+    arxivId: 'arXiv:2305.14314',
+    doi: 'https://arxiv.org/abs/2305.14314',
+    githubUrl: 'https://github.com/artidoro/qlora',
+    authors: ['Tim Dettmers', 'Artidoro Pagnoni', 'Ari Holtzman', 'Luke Zettlemoyer'],
+    affiliations: ['University of Washington (华盛顿大学)'],
+    publishDate: 'NeurIPS 2023 (开源微调平民化核心)',
+    category: '高效微调 (PEFT)',
+    tags: ['QLoRA', '4-bit NormalFloat (NF4)', 'Double Quantization 双重量化', 'Paged Optimizers 分页优化器', '单卡微调 65B'],
+    status: 'active',
+    tldrZh:
+      '一张 48GB 卡微调 65B 大模型！开源微调能全面铺开，靠的就是将冻结主干权重量化为信息论最优的 4-bit NormalFloat (NF4) 格式，配合双重量化（每参数再省 0.373 bits）与统一内存分页优化器，计算时动态反量化为 BF16 而梯度只进低秩 LoRA 旁路，100% 追平 16-bit 全量微调！',
+    keyMetrics: [
+      { label: '65B 微调显存需求', value: '780GB ➔ < 41GB (省19倍)', highlight: true },
+      { label: '16-bit 性能恢复率', value: '100.0% 无损追平', highlight: true },
+      { label: '有效存储位宽 (NF4+DQ)', value: '4.127 bits / param' },
+      { label: 'Guanaco-65B 对话水平', value: 'ChatGPT 的 99.3%' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'NF4 分位数与双重量化精读',
+      'QLoRA 单卡显存账本与 NF4 分桶模拟器',
+      'Int4 / FP4 / NF4 消融基准对比',
+      '核心概念双解词典'
+    ],
+    component: Qlora2023App
+  },
+
+  // ==================== 第二支柱：服务得以卖出去 (LLM Serving & Inference Stack) ====================
+  {
+    id: 'flashattention-2022',
+    folderName: 'FlashAttention-Fast-and-Memory-Efficient-Exact-Attention-with-IO-Awareness',
+    titleZh: 'FlashAttention：兼顾硬件 IO 感知的高速省显存精确注意力算法',
+    titleEn: 'FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness',
+    arxivId: 'arXiv:2205.14135',
+    doi: 'https://arxiv.org/abs/2205.14135',
+    githubUrl: 'https://github.com/Dao-AILab/flash-attention',
+    authors: ['Tri Dao', 'Daniel Y. Fu', 'Stefano Ermon', 'Atri Rudra', 'Christopher Ré'],
+    affiliations: ['Stanford University (斯坦福大学)', 'University at Buffalo'],
+    publishDate: 'NeurIPS 2022 (现代训练与推理必备内核)',
+    category: '推理与服务栈',
+    tags: ['FlashAttention', 'IO-Awareness 硬件感知', 'SRAM Tiling 分块', 'Online Softmax 在线重缩放', 'O(N) 线性显存'],
+    status: 'active',
+    tldrZh:
+      '注意力计算结果逐比特完全不变，却省掉了对主显存（HBM）中巨型 N×N 矩阵的反复读写！利用 GPU 片上高速 SRAM 分块（Tiling）与 Online Softmax 动态重缩放递推，将注意力显存从 O(N²) 彻底压至线性 O(N)，速度飙升 3~7.6 倍，让 64K~1M 长上下文真正做得起！',
+    keyMetrics: [
+      { label: '注意力激活显存复杂度', value: 'O(N²) ➔ O(N) (省10~80倍)', highlight: true },
+      { label: '端到端训练与推理提速', value: '3.0x ~ 7.6x 倍加速', highlight: true },
+      { label: '计算结果精确度', value: '100% Exact (零近似损失)' },
+      { label: 'HBM 显存读写削减', value: '减少最高 9.1x 访存字节' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'GPU SRAM/HBM 层级与在线 Softmax 精读',
+      'FlashAttention 分块 IO 与显存节省计算器',
+      '1K~64K 序列长度显存延迟实测表',
+      '核心概念双解词典'
+    ],
+    component: FlashAttention2022App
+  },
+  {
+    id: 'orca-2022',
+    folderName: 'Orca-A-Distributed-Serving-System-for-Transformer-Based-Generative-Models',
+    titleZh: 'Orca 连续批处理：开创按迭代调度的现代大模型高吞吐推理引擎范式',
+    titleEn: 'Orca: A Distributed Serving System for Transformer-Based Generative Models',
+    arxivId: 'OSDI 2022',
+    doi: 'https://www.usenix.org/conference/osdi22/presentation/yu',
+    authors: ['Gyeong-In Yu', 'Joo Seong Jeong', 'Geon-Woo Kim', 'Soojeong Kim', 'Byung-Gon Chun'],
+    affiliations: ['Seoul National University (首尔国立大学)', 'FriendliAI'],
+    publishDate: 'OSDI 2022 (Continuous Batching 鼻祖)',
+    category: '推理与服务栈',
+    tags: ['Orca', 'Iteration-Level Scheduling 按迭代调度', 'Continuous Batching 连续批处理', 'Selective Batching 选择性合批', '36.9x 吞吐提升'],
+    status: 'active',
+    tldrZh:
+      '按单步迭代调度，而不是按整段请求调度！终结传统静态批处理中「短请求生成完 [EOS] 后必须原地空转等待 Batch 内最长请求」的算力黑洞，配合将 Linear 层按 Token 展平合批的 Selective Batching，在 GPT-3 175B 上于相同延迟下实现 FasterTransformer 36.9 倍的吞吐暴涨！',
+    keyMetrics: [
+      { label: 'GPT-3 175B 吞吐加速', value: '36.9x 倍 (同延迟下)', highlight: true },
+      { label: '调度时间粒度', value: '1 个 Token 迭代步', highlight: true },
+      { label: 'GPU 有效计算利用率', value: '14.2% ➔ 89.7%' },
+      { label: '工业界生态传承', value: 'vLLM / TRT-LLM 调度核心' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '按迭代调度与选择性合批全文精读',
+      'Continuous Batching 气泡消除与吞吐模拟器',
+      'FasterTransformer vs Orca 基准对比',
+      '核心概念双解词典'
+    ],
+    component: Orca2022App
+  },
+  {
+    id: 'pagedattention-2023',
+    folderName: 'Efficient-Memory-Management-for-Large-Language-Model-Serving-with-PagedAttention',
+    titleZh: 'PagedAttention 与 vLLM：用操作系统虚拟内存分页彻底终结 KV Cache 显存浪费',
+    titleEn: 'Efficient Memory Management for Large Language Model Serving with PagedAttention (vLLM)',
+    arxivId: 'arXiv:2309.06180',
+    doi: 'https://arxiv.org/abs/2309.06180',
+    githubUrl: 'https://github.com/vllm-project/vllm',
+    authors: ['Woosuk Kwon', 'Zhuohan Li (李卓桓)', 'Siyuan Zhuang', 'Ying Sheng', 'Lianmin Zheng', 'Ion Stoica'],
+    affiliations: ['UC Berkeley (加州大学伯克利分校)'],
+    publishDate: 'SOSP 2023 (vLLM 开源推理标准)',
+    category: '推理与服务栈',
+    tags: ['PagedAttention', 'vLLM 引擎核心', 'KV Cache 虚拟内存分页', '消除 60%~80% 显存浪费', 'Copy-on-Write 前缀共享'],
+    status: 'active',
+    tldrZh:
+      '开源推理事实标准 vLLM 的核心！此前连续显存预分配会白白浪费掉 60% ~ 80% 的 GPU 显存。PagedAttention 借鉴操作系统虚拟内存分页，将 KV Cache 切分为固定大小（16 Tokens）的非连续物理块按需分配，将显存浪费压至 <4%，并发吞吐比 Orca 再翻 2.7~4 倍！',
+    keyMetrics: [
+      { label: 'KV Cache 显存浪费率', value: '60~80% ➔ < 3.7%', highlight: true },
+      { label: '吞吐量提升 (vs FT/Orca)', value: '24.0x / 2.7x~4.0x', highlight: true },
+      { label: '写时复制前缀显存节省', value: '最高省 55% KV 显存' },
+      { label: '物理块黄金粒度 B', value: '16 Tokens / Block' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '三大显存碎片剖析与分页页表精读',
+      'PagedAttention 虚拟页表与并发吞吐实验台',
+      'FasterTransformer / Orca / vLLM 全景对比',
+      '核心概念双解词典'
+    ],
+    component: PagedAttention2023App
+  },
+  {
+    id: 'speculative-decoding-2022',
+    folderName: 'Fast-Inference-from-Transformers-via-Speculative-Decoding',
+    titleZh: 'Speculative Decoding 投机采样：以小模型草稿与大模型并行校验实现无损推理加速',
+    titleEn: 'Fast Inference from Transformers via Speculative Decoding',
+    arxivId: 'arXiv:2211.17192',
+    doi: 'https://arxiv.org/abs/2211.17192',
+    authors: ['Yaniv Leviathan', 'Matan Kalman', 'Yossi Matias', 'Charlie Chen (DeepMind 2302.01318)'],
+    affiliations: ['Google Research', 'DeepMind'],
+    publishDate: 'ICML 2023 (无损并行解码基石)',
+    category: '推理与服务栈',
+    tags: ['Speculative Decoding 投机采样', '小模型打草稿 + 大模型并行验证', '修正拒绝采样 min(1, p/q)', '100% 数学无损输出', '2x~3.4x 降延迟'],
+    status: 'active',
+    tldrZh:
+      '利用大模型单步推理受限于访存带宽、「并行算 5 个词与算 1 个词耗时几乎相同」的硬件特性，让轻量草稿模型先快速连猜 γ 个词，再由大模型在【单次前向传播】中并行打分并通过修正拒绝采样校验，在保证输出分布与原模型 100% 数学恒等无损下提速 2~3.4 倍！',
+    keyMetrics: [
+      { label: '端到端生成速度提升', value: '2.0x ~ 3.4x 倍提速', highlight: true },
+      { label: '输出概率分布保真度', value: '100.0% 精确恒等无损', highlight: true },
+      { label: '单步大模型前向推进', value: '1 ➔ 最高 γ+1 个 Tokens' },
+      { label: '现代演进生态', value: 'Medusa / EAGLE / DeepSeek MTP' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '修正拒绝采样无损定理证明精读',
+      '投机采样步长 γ 与接受率 α 加速推演台',
+      '不同温度与任务下的投机加速对比',
+      '核心概念双解词典'
+    ],
+    component: SpeculativeDecoding2022App
+  },
+  {
+    id: 'gptq-2022',
+    folderName: 'GPTQ-Accurate-Post-Training-Quantization-for-Generative-Pre-trained-Transformers',
+    titleZh: 'GPTQ 与 AWQ 后训练量化：利用二阶海森补偿将百亿大模型无损塞进单张显卡',
+    titleEn: 'GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers',
+    arxivId: 'arXiv:2210.17323',
+    doi: 'https://arxiv.org/abs/2210.17323',
+    githubUrl: 'https://github.com/IST-DASLab/gptq',
+    authors: ['Elias Frantar', 'Saleh Ashkboos', 'Torsten Hoefler', 'Dan Alistarh', 'Ji Lin (林佳俊 AWQ 2306.00978)'],
+    affiliations: ['IST Austria', 'ETH Zurich', 'MIT HAN Lab (AWQ)'],
+    publishDate: 'ICLR 2023 & MLSys 2024 (4-bit 部署双雄)',
+    category: '推理与服务栈',
+    tags: ['GPTQ 4-bit/3-bit 量化', '二阶海森逆误差补偿 H^{-1}', 'Cholesky 延迟块更新', 'AWQ 1% 显著通道缩放', '单卡跑 175B'],
+    status: 'active',
+    tldrZh:
+      '无需重训练，4 小时内把 175B 大模型从 350GB (FP16) 无损压进单张 80GB 显卡！GPTQ 利用二阶海森逆矩阵 H^{-1} 在量化每一列时自动微调右侧未量化权重抵消误差；配合 AWQ（2306.00978 保护激活最大的 1% 显著权重通道）共同统治开源社区 4-bit 权重量化发布标准！',
+    keyMetrics: [
+      { label: '175B 模型部署显卡数', value: '5×A100 ➔ 1×A100 (省4倍)', highlight: true },
+      { label: 'Decode 单步生成加速', value: '3.25x ~ 4.53x 提速', highlight: true },
+      { label: 'OPT-175B 4-bit PPL 损失', value: '< 0.03 (8.37 vs 8.34)' },
+      { label: '175B 离线校准总耗时', value: '仅 4 GPU 小时 (无需重训)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'GPTQ 二阶海森补偿与 AWQ 缩放精读',
+      '4/3/2-bit 权重量化误差与带宽提速实验台',
+      'RTN vs GPTQ vs AWQ 困惑度对比',
+      '核心概念双解词典'
+    ],
+    component: Gptq2022App
+  },
+  {
+    id: 'deepseek-v2-2024',
+    folderName: 'DeepSeek-V2-A-Strong-Economical-and-Efficient-Mixture-of-Experts-Language-Model',
+    titleZh: 'DeepSeek-V2：多头潜在注意力 (MLA) 与细粒度共享专家 (DeepSeekMoE) 的经济高效大模型革命',
+    titleEn: 'DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model',
+    arxivId: 'arXiv:2405.04434',
+    doi: 'https://arxiv.org/abs/2405.04434',
+    githubUrl: 'https://github.com/deepseek-ai/DeepSeek-V2',
+    authors: ['DeepSeek-AI (深度求索团队)'],
+    affiliations: ['DeepSeek-AI (深度求索)'],
+    publishDate: '2024年5月 (DeepSeek-V3/R1 架构基座)',
+    category: '推理与服务栈',
+    tags: ['DeepSeek-V2', 'MLA 多头潜在注意力', 'KV Cache 暴降 93.3%', '解耦旋转编码 Decoupled RoPE', 'DeepSeekMoE 236B/21B'],
+    status: 'active',
+    tldrZh:
+      '把大模型 API 推理成本打穿地板的架构革命！首创多头潜在注意力（MLA），将键值联合低秩压缩为 512 维潜向量并在推理时将展开矩阵吸收进 W^Q 与 W^O（配合解耦 RoPE），使 KV Cache 惊人地暴降 93.3% 且精度超越标准 MHA；结合细粒度共享专家 MoE（236B总/21B激活），生成吞吐飙升 5.76 倍！',
+    keyMetrics: [
+      { label: 'KV Cache 显存削减率', value: '-93.3% (仅存576元素/层)', highlight: true },
+      { label: '最大生成吞吐加速比', value: '5.76x 倍 (>50,000 tok/s)', highlight: true },
+      { label: '训练算力成本节省', value: '-42.5% (236B总 / 21B激活)' },
+      { label: 'MMLU 综合评测表现', value: '78.5% (超越 70B 稠密旗舰)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'MLA 矩阵吸收与解耦 RoPE 推导精读',
+      'MLA 潜向量压缩与 DeepSeekMoE 成本实验台',
+      'MHA / GQA / MQA / MLA 消融对比',
+      '核心概念双解词典'
+    ],
+    component: DeepSeekV22024App
+  },
+
+  // ==================== 第三支柱：模型得以变成人们在用的行为 (Alignment, RLHF & Agents) ====================
+  {
+    id: 'rlhf-2017',
+    folderName: 'Deep-Reinforcement-Learning-from-Human-Preferences',
+    titleZh: 'RLHF 奠基论文：基于人类偏好的深度强化学习与奖励模型训练范式',
+    titleEn: 'Deep Reinforcement Learning from Human Preferences',
+    arxivId: 'arXiv:1706.03741',
+    doi: 'https://arxiv.org/abs/1706.03741',
+    authors: ['Paul F. Christiano', 'Jan Leike', 'Tom B. Brown', 'Miljan Martic', 'Shane Legg', 'Dario Amodei'],
+    affiliations: ['OpenAI', 'DeepMind'],
+    publishDate: 'NeurIPS 2017 (RLHF 对齐开山鼻祖)',
+    category: '对齐与推理智能体',
+    tags: ['RLHF 奠基', 'Bradley-Terry 成对偏好', 'Reward Model 奖励模型', '人类二选一比较', '攻克无法手写奖励难题'],
+    status: 'active',
+    tldrZh:
+      '现代大模型人类偏好对齐（RLHF）的总源头！针对人类无法用数学代码写出复杂行为奖励函数的困境，首创「策略生成成对轨迹 → 人类二选一点击偏好 → Bradley-Terry 交叉熵训练奖励模型 r̂ → 强化学习策略优化」闭环，仅凭不到 1 小时人类反馈即教会机器人完美后空翻！',
+    keyMetrics: [
+      { label: '人工反馈耗时缩减', value: '99.9% 缩减 (< 1小时)', highlight: true },
+      { label: '偏好建模核心方程', value: 'Bradley-Terry σ(r_w - r_l)', highlight: true },
+      { label: '后空翻所需人工点击', value: '仅 ~900 次二选一比较' },
+      { label: '历史传承地位', value: 'InstructGPT / ChatGPT 母本' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'Bradley-Terry 奖励拟合与防作弊精读',
+      'RLHF 成对偏好学习与 Reward Hacking 模拟器',
+      '手工代理奖励 vs 绝对打分 vs RLHF 对比',
+      '核心概念双解词典'
+    ],
+    component: Rlhf2017App
+  },
+  {
+    id: 'instructgpt-2022',
+    folderName: 'Training-language-models-to-follow-instructions-with-human-feedback',
+    titleZh: 'InstructGPT：将大语言模型从「续写机器」蜕变为「听懂指令助手」的 ChatGPT 直接蓝本',
+    titleEn: 'Training language models to follow instructions with human feedback (InstructGPT)',
+    arxivId: 'arXiv:2203.02155',
+    doi: 'https://arxiv.org/abs/2203.02155',
+    authors: ['Long Ouyang (欧阳龙)', 'Jeff Wu', 'Xu Jiang', 'Diogo Almeida', 'Paul Christiano', 'Jan Leike', 'Ryan Lowe'],
+    affiliations: ['OpenAI'],
+    publishDate: 'NeurIPS 2022 (ChatGPT 直接技术说明书)',
+    category: '对齐与推理智能体',
+    tags: ['InstructGPT (ChatGPT蓝本)', 'SFT + RM + PPO 后训练三步法', '1.3B 击败 175B GPT-3', 'KL 散度安全绳 + PPO-ptx', '消除对齐税'],
+    status: 'active',
+    tldrZh:
+      'ChatGPT 诞生的直接技术说明书！确立「Step 1 监督微调 (SFT) → Step 2 奖励模型 (RM, K=4~9 组内成对排序) → Step 3 带 KL 惩罚与预训练梯度混入的 PPO-ptx」标准后训练三部曲。仅 13 亿参数（1.3B）的 InstructGPT 在人类盲测中击败大 134 倍的 175B 原始 GPT-3！',
+    keyMetrics: [
+      { label: '以小胜大跨量级奇迹', value: '1.3B 胜率超越 175B GPT-3', highlight: true },
+      { label: '175B 对齐前后人类胜率', value: '85% ± 3% 压倒性胜出', highlight: true },
+      { label: '闭域幻觉造假率降低', value: '41% ➔ 21% (直接减半)' },
+      { label: '单题排序样本扩增', value: 'K=4~9 产出 C(K,2)=6~36 对' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'SFT / RM / PPO-ptx 三阶段全流程精读',
+      'InstructGPT 对齐三部曲与 KL 惩罚实验台',
+      'GPT-3 vs SFT vs PPO vs PPO-ptx 对比',
+      '核心概念双解词典'
+    ],
+    component: InstructGpt2022App
+  },
+  {
+    id: 'dpo-2023',
+    folderName: 'Direct-Preference-Optimization-Your-Language-Model-is-Secretly-a-Reward-Model',
+    titleZh: 'DPO 直接偏好优化：你的语言模型本身就暗藏着一个奖励模型（免 RL 对齐革命）',
+    titleEn: 'Direct Preference Optimization: Your Language Model is Secretly a Reward Model (DPO)',
+    arxivId: 'arXiv:2305.18290',
+    doi: 'https://arxiv.org/abs/2305.18290',
+    githubUrl: 'https://github.com/eric-mitchell/direct-preference-optimization',
+    authors: ['Rafael Rafailov', 'Archit Sharma', 'Eric Mitchell', 'Stefano Ermon', 'Christopher D. Manning', 'Chelsea Finn'],
+    affiliations: ['Stanford University (斯坦福大学)'],
+    publishDate: 'NeurIPS 2023 (开源偏好对齐首选标准)',
+    category: '对齐与推理智能体',
+    tags: ['DPO 直接偏好优化', '无需独立 Reward Model', '无需 PPO 在线强化学习', '闭式解变量代换相消 Z(x)', '自适应错题梯度加权'],
+    status: 'active',
+    tldrZh:
+      '告别同时加载 4 个大模型跑 PPO 的炼丹噩梦！通过求解 KL 约束奖励最大化的解析闭式解，用策略对数比 β·log(π_θ/π_ref) 直接代换奖励函数 r(x,y)，代入 Bradley-Terry 后配分函数 Z(x) 完美相消！将复杂的 RLHF 化简为单阶段二元交叉熵损失，成为 LLaMA-3 等开源对齐标配！',
+    keyMetrics: [
+      { label: '训练常驻模型数量', value: '4 个 (PPO) ➔ 仅 1 个训练模型', highlight: true },
+      { label: '训练期在线采样开销', value: '0 Rollout (与 SFT 同速)', highlight: true },
+      { label: 'TL;DR 摘要人类胜率', value: '61.5% (超越 PPO 的 57.1%)' },
+      { label: '核心超参数数量', value: '仅 1 个温度系数 β (极稳定)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '闭式解代换与配分函数相消推导精读',
+      'DPO 隐式奖励与自适应梯度权重实验台',
+      'SFT / Unlikelihood / PPO / DPO 全景对比',
+      '核心概念双解词典'
+    ],
+    component: Dpo2023App
+  },
+  {
+    id: 'constitutional-ai-2022',
+    folderName: 'Constitutional-AI-Harmlessness-from-AI-Feedback',
+    titleZh: 'Constitutional AI 宪法 AI：基于自然语言原则章程与 AI 反馈的自我批判对齐范式',
+    titleEn: 'Constitutional AI: Harmlessness from AI Feedback (CAI & RLAIF)',
+    arxivId: 'arXiv:2212.08073',
+    doi: 'https://arxiv.org/abs/2212.08073',
+    githubUrl: 'https://github.com/anthropics/ConstitutionalHarmlessnessPaper',
+    authors: ['Yuntao Bai (白运涛)', 'Saurav Kadavath', 'Sandipan Kundu', 'Amanda Askell', 'Jared Kaplan', 'Dario Amodei'],
+    affiliations: ['Anthropic (Claude 核心团队)'],
+    publishDate: '2022年12月 (Anthropic Claude 灵魂基石)',
+    category: '对齐与推理智能体',
+    tags: ['Constitutional AI (CAI)', 'RLAIF (AI反馈强化学习)', 'Critique → Revision 自我批评改写', '告别消极拒答 Evasiveness', '16条明文宪法原则'],
+    status: 'active',
+    tldrZh:
+      'Anthropic 训练 Claude 的核心秘籍！无需任何人工无害性标注，仅凭 16 条自然语言「宪法章程」，第一阶段让模型对红队攻击回复做多轮「自我批评与自我改写（SL-CAI）」，第二阶段用思维链 AI 评审打分驱动 RLAIF，在零人工安全标注下同时赢得更高安全性与「不敷衍推诿」的高有用性！',
+    keyMetrics: [
+      { label: '人工无害性安全标注', value: '0 条 (100% AI 自监督对齐)', highlight: true },
+      { label: '无害性 Elo 评分表现', value: '超越全人工 HH-RLHF (+52)', highlight: true },
+      { label: '核心治理宪法规模', value: '仅 16 条自然语言原则' },
+      { label: '安全回答交互风格', value: '礼貌解释风险 (零生硬拒答)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'SL-CAI 自改写与 CoT RLAIF 精读',
+      '宪法 AI 批评改写循环与帕累托前沿实验台',
+      'HH-RLHF vs SL-CAI vs RL-CAI 对比',
+      '核心概念双解词典'
+    ],
+    component: ConstitutionalAi2022App
+  },
+  {
+    id: 'react-2022',
+    folderName: 'ReAct-Synergizing-Reasoning-and-Acting-in-Language-Models',
+    titleZh: 'ReAct 智能体奠基论文：在大语言模型中协同交织「思维链推理」与「外部环境行动」',
+    titleEn: 'ReAct: Synergizing Reasoning and Acting in Language Models',
+    arxivId: 'arXiv:2210.03629',
+    doi: 'https://arxiv.org/abs/2210.03629',
+    githubUrl: 'https://github.com/ysymyth/ReAct',
+    authors: ['Shunyu Yao (姚顺雨)', 'Jeffrey Zhao', 'Dian Yu', 'Nan Du', 'Izhak Shafran', 'Karthik Narasimhan', 'Yuan Cao'],
+    affiliations: ['Princeton University (普林斯顿大学)', 'Google Research'],
+    publishDate: 'ICLR 2023 (现代 AI Agent 与工具调用鼻祖)',
+    category: '对齐与推理智能体',
+    tags: ['ReAct 智能体范式', 'Thought → Action → Observation', '消除 CoT 56% 内部幻觉', '工具调用 Tool Use 基石', 'ALFWorld +34% 暴涨'],
+    status: 'active',
+    tldrZh:
+      '现代一切 AI Agent 与 Tool Use 框架的开山鼻祖！针对纯思维链（CoT）闭门造车易产生事实幻觉、纯动作模型缺乏规划的割裂困境，提出交织执行的「Thought（内部思考拆解）→ Action（调用外部工具/API）→ Observation（获取环境真实反馈）」闭环，让推理指导行动、让行动锚定推理！',
+    keyMetrics: [
+      { label: 'ALFWorld 具身任务成功率', value: '71.0% (超 Act-Only +26%)', highlight: true },
+      { label: '推理失败中的编造幻觉率', value: '56% (CoT) ➔ 0% (ReAct)', highlight: true },
+      { label: 'WebShop 在线购物成功率', value: '40.0% (+11% 超RL基线)' },
+      { label: 'HotpotQA 协同自洽得分', value: '35.1% EM (ReAct+CoT-SC)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '增广动作空间 Â = A ∪ L 全文精读',
+      'ReAct (Thought-Action-Obs) 闭环抗幻觉实验台',
+      'CoT vs Act-Only vs ReAct 权威基准对比',
+      '核心概念双解词典'
+    ],
+    component: React2022App
+  },
+  {
+    id: 'deepseek-r1-2025',
+    folderName: 'DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning',
+    titleZh: 'DeepSeek-R1 强化学习推理大模型：纯组相对策略优化 (GRPO) 激发长思维链顿悟涌现',
+    titleEn: 'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning',
+    arxivId: 'arXiv:2501.12948',
+    doi: 'https://arxiv.org/abs/2501.12948',
+    githubUrl: 'https://github.com/deepseek-ai/DeepSeek-R1',
+    authors: ['DeepSeek-AI (深度求索团队)'],
+    affiliations: ['DeepSeek-AI (含 DeepSeekMath GRPO 2402.03300)'],
+    publishDate: '2025年1月 (开源推理大模型里程碑)',
+    category: '对齐与推理智能体',
+    tags: ['DeepSeek-R1 & R1-Zero', 'GRPO 组相对策略优化', '砍掉 Critic 价值网络', '纯规则可验证奖励 RL', 'Aha Moment 顿悟涌现'],
+    status: 'active',
+    tldrZh:
+      '震动全球的开源推理大模型里程碑！R1-Zero 证明无需任何人工思维链 SFT，直接从基础模型出发，通过 GRPO（用同题 G 个采样回答的组内均值标准差替代昂贵的 Critic 网络）与纯规则可验证奖励进行强化学习，即可自发涌现出自我反思、「顿悟时刻（Aha Moment）」与超长思维链，AIME 2024 从 15.6% 狂飙至 79.8% 超越 o1！',
+    keyMetrics: [
+      { label: 'AIME 2024 数学竞赛', value: '15.6% ➔ 79.8% (超 o1-1217)', highlight: true },
+      { label: 'MATH-500 准确率', value: '97.3% (全球开源巅峰)', highlight: true },
+      { label: 'GRPO 价值网络显存开销', value: '0 GB (100% 砍除 Critic)' },
+      { label: '32B 蒸馏小模型 AIME', value: '72.6% (远超 o1-mini 63.6%)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'GRPO 方程与四阶段 R1 进化精读',
+      'GRPO 组内相对优势与思维链涌现实验台',
+      'DeepSeek-R1 vs OpenAI o1 全基准对比',
+      '核心概念双解词典'
+    ],
+    component: DeepSeekR12025App
+  },
+
+  // ==================== 第四支柱：语言模型以外，各自成为一条产业 (Multimodal, Speech, Vision & Science) ====================
+  {
+    id: 'clip-2021',
+    folderName: 'Learning-Transferable-Visual-Models-From-Natural-Language-Supervision-CLIP',
+    titleZh: 'CLIP 对比语言-图像预训练：打通视觉与自然语言共享语义空间的零样本多模态基石',
+    titleEn: 'Learning Transferable Visual Models From Natural Language Supervision (CLIP)',
+    arxivId: 'arXiv:2103.00020',
+    doi: 'https://arxiv.org/abs/2103.00020',
+    githubUrl: 'https://github.com/openai/CLIP',
+    authors: ['Alec Radford', 'Jong Wook Kim', 'Chris Hallacy', 'Aditya Ramesh', 'Gabriel Goh', 'Ilya Sutskever'],
+    affiliations: ['OpenAI'],
+    publishDate: 'ICML 2021 (图文多模态与文生图共同基石)',
+    category: '视觉与生成模型',
+    tags: ['CLIP 双塔对比学习', '4亿图文对 WIT', 'N×N 对称 InfoNCE 损失', 'Zero-Shot 开放词表分类', 'SD 与 LLaVA 的眼睛'],
+    status: 'active',
+    tldrZh:
+      '把图像与文字推进同一个向量空间的跨模态总基石！放弃低效的逐词生成图注，改在 4 亿网页图文对上用双塔编码器执行大批次（N=32,768）余弦相似度对比学习（比生成目标快 4 倍以上）。无需见过 1 张 ImageNet 训练图，仅凭提示词 `"A photo of a {object}"` 零样本追平全监督 ResNet-50，并成为 Stable Diffusion 与 LLaVA 的核心组件！',
+    keyMetrics: [
+      { label: '零样本 ImageNet Top-1', value: '76.2% (0张训练图追平监督)', highlight: true },
+      { label: '对比目标 vs 生成效率', value: '4.0x+ 训练提速', highlight: true },
+      { label: '分布外 ImageNet-R/A', value: '88.9% / 77.1% (ResNet仅2.7%)' },
+      { label: '预训练图文对规模', value: '400 Million (4亿对 WIT)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '对称 InfoNCE 与视觉提示工程精读',
+      'CLIP N×N 对比矩阵与分布偏移鲁棒性实验台',
+      '7大自然分布偏移基准鲁棒性对比',
+      '核心概念双解词典'
+    ],
+    component: Clip2021App
+  },
+  {
+    id: 'whisper-2022',
+    folderName: 'Robust-Speech-Recognition-via-Large-Scale-Weak-Supervision-Whisper',
+    titleZh: 'Whisper 语音识别基石：以 68 万小时大规模弱监督实现零样本抗噪与多语言语音转录',
+    titleEn: 'Robust Speech Recognition via Large-Scale Weak Supervision (Whisper)',
+    arxivId: 'arXiv:2212.04356',
+    doi: 'https://arxiv.org/abs/2212.04356',
+    githubUrl: 'https://github.com/openai/whisper',
+    authors: ['Alec Radford', 'Jong Wook Kim', 'Tao Xu', 'Greg Brockman', 'Christine McLeavey', 'Ilya Sutskever'],
+    affiliations: ['OpenAI'],
+    publishDate: 'ICML 2023 (开源多语言语音转文字事实标准)',
+    category: '视觉与生成模型',
+    tags: ['Whisper 语音识别', '680,000 小时弱监督', '多任务特殊控制 Token', '反机器字幕清洗过滤', '零样本词错率砍半 (-55.2%)'],
+    status: 'active',
+    tldrZh:
+      '终结语音识别「一个场景微调一个模型」的时代！收集清洗 68 万小时（77年）多语言多任务互联网弱监督音频，用最标准的 Encoder-Decoder Transformer 配合 `<|lang|> <|transcribe/translate|> <|timestamp|>` 控制前缀端到端训练，在 12 个真实嘈杂基准上零样本将词错率（WER）比全监督模型砍掉 55.2%，追平人类速记员！',
+    keyMetrics: [
+      { label: '跨领域零样本 WER 降低', value: '-55.2% (词错率直接砍半)', highlight: true },
+      { label: '弱监督训练音频总时长', value: '680,000 小时 (涵盖96语种)', highlight: true },
+      { label: '真实人类速记员盲测对比', value: '追平专业人类专家准确率' },
+      { label: '原生端到端输出能力', value: '自带标点 + 大小写 + 时间戳' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '68万小时数据清洗与多任务前缀精读',
+      'Whisper 弱监督规模与抗噪 WER 实验台',
+      'wav2vec 2.0 vs Whisper 12基准对比',
+      '核心概念双解词典'
+    ],
+    component: Whisper2022App
+  },
+  {
+    id: 'sam-2023',
+    folderName: 'Segment-Anything-SAM',
+    titleZh: 'SAM 分割一切：以可提示分割、数据引擎闭环与 11 亿掩码开启计算机视觉基础模型时代',
+    titleEn: 'Segment Anything (SAM)',
+    arxivId: 'arXiv:2304.02643',
+    doi: 'https://arxiv.org/abs/2304.02643',
+    githubUrl: 'https://github.com/facebookresearch/segment-anything',
+    authors: ['Alexander Kirillov', 'Eric Mintun', 'Nikhila Ravi', 'Ross Girshick', 'Kaiming He (何恺明)'],
+    affiliations: ['Meta AI Research (FAIR)'],
+    publishDate: 'ICCV 2023 (视觉分割基础模型里程碑)',
+    category: '视觉与生成模型',
+    tags: ['Segment Anything (SAM)', 'Promptable Segmentation 可提示分割', 'SA-1B (11亿掩码数据飞轮)', '3掩码歧义消解 (整体/部件/子部件)', '50ms 浏览器实时交互'],
+    status: 'active',
+    tldrZh:
+      '把 Prompt 范式成功带入计算机视觉！定义「可提示分割」任务（点、框、文本皆可作提示），设计「重图像编码器跑一次 + 50ms 极轻解码器一次吐出 3 个嵌套掩码化解单点歧义」架构，并通过三阶段「模型与人工协同数据引擎」在 1100 万张图上造出 11 亿个掩码（SA-1B，比旧数据集大 400 倍），实现零样本分割万物！',
+    keyMetrics: [
+      { label: 'SA-1B 开源掩码总数', value: '1.1 Billion (大400倍!)', highlight: true },
+      { label: '前端单次交互解码延迟', value: '~50 ms (浏览器实时跟手)', highlight: true },
+      { label: '23数据集单点零样本 mIoU', value: '74.9 (+18.1 超交互基线)' },
+      { label: '单点歧义消解输出头', value: '3 Masks (整体/部件/子部件)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '三阶段数据飞轮与歧义感知损失精读',
+      'SAM 可提示分割与三层级消歧实验台',
+      '23 大跨领域数据集零样本评测表',
+      '核心概念双解词典'
+    ],
+    component: Sam2023App
+  },
+  {
+    id: 'llava-2023',
+    folderName: 'Visual-Instruction-Tuning-LLaVA',
+    titleZh: 'LLaVA 视觉指令微调：用一层简单线性投影桥接 CLIP 与 LLM 的多模态大模型标准架构',
+    titleEn: 'Visual Instruction Tuning (LLaVA)',
+    arxivId: 'arXiv:2304.08485',
+    doi: 'https://arxiv.org/abs/2304.08485',
+    githubUrl: 'https://github.com/haotian-liu/LLaVA',
+    authors: ['Haotian Liu (刘昊天)', 'Chunyuan Li (李春元)', 'Qingyang Wu', 'Yong Jae Lee'],
+    affiliations: ['UW–Madison', 'Microsoft Research', 'Columbia University'],
+    publishDate: 'NeurIPS 2023 Oral (开源多模态VLM黄金范式)',
+    category: '视觉与生成模型',
+    tags: ['LLaVA 多模态大模型', 'Visual Instruction Tuning', 'CLIP + Linear/MLP 投影 + LLM', '符号坐标驱动 GPT-4 造数据', '两阶段对齐+微调'],
+    status: 'active',
+    tldrZh:
+      '定义了今日几乎所有开源视觉大模型（VLM）的标准做法！无需设计沉重的交叉注意力或 Q-Former，直接用一层极简线性投影（或 2 层 MLP）将 CLIP 图像块特征映射为大语言模型的「视觉 Token」；并首创把图像图注+物体坐标框喂给纯文本 GPT-4 合成 15.8 万条多模态指令数据，以两阶段微调斩获 92.53% ScienceQA 新纪录！',
+    keyMetrics: [
+      { label: 'ScienceQA 多模态准确率', value: '92.53% (历史新 SOTA)', highlight: true },
+      { label: 'LLaVA-Bench 相对 GPT-4', value: '85.1% (复杂推理达 96.5%)', highlight: true },
+      { label: '合成多模态指令集规模', value: '158K (对话+详述+推理)' },
+      { label: '跨模态桥接器复杂度', value: '仅 1 层 Linear / 2 层 MLP' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'GPT-4 符号化数据合成与两阶段微调精读',
+      'LLaVA 视觉 Token 投影与指令配比实验台',
+      'BLIP-2 / Flamingo / LLaVA 消融对比',
+      '核心概念双解词典'
+    ],
+    component: Llava2023App
+  },
+  {
+    id: 'ddpm-2020',
+    folderName: 'Denoising-Diffusion-Probabilistic-Models-DDPM',
+    titleZh: 'DDPM 去噪扩散概率模型：用简化噪声预测损失开启现代视觉、音频与视频生成黄金时代',
+    titleEn: 'Denoising Diffusion Probabilistic Models (DDPM)',
+    arxivId: 'arXiv:2006.11239',
+    doi: 'https://arxiv.org/abs/2006.11239',
+    githubUrl: 'https://github.com/hojonathanho/diffusion',
+    authors: ['Jonathan Ho', 'Ajay Jain', 'Pieter Abbeel'],
+    affiliations: ['UC Berkeley (加州大学伯克利分校)'],
+    publishDate: 'NeurIPS 2020 (现代图像/视频扩散生成总源头)',
+    category: '视觉与生成模型',
+    tags: ['DDPM 扩散奠基', '一步闭式加噪 √ᾱ_t x_0 + √(1-ᾱ_t)ε', '预测噪声残差 ε_θ(x_t, t)', '简化去权重损失 L_simple', '历史性击败 GAN (3.17 FID)'],
+    status: 'active',
+    tldrZh:
+      '现代一切图像、音频、视频生成模型（Stable Diffusion、Midjourney、Sora）的算法总源头！推导前向任意步闭式加噪公式 x_t = √ᾱ_t x_0 + √(1-ᾱ_t)ε，将逆向神经网络从「预测均值 μ_θ」重参数化为「直接预测混入的标准高斯噪声 ε_θ」，并用去权重简化损失 L_simple = E[||ε - ε_θ||²] 将 CIFAR-10 FID 从 13.51 暴降至 3.17，首次全面击败 GAN！',
+    keyMetrics: [
+      { label: 'CIFAR-10 生成质量 FID', value: '3.17 FID (超越所有 GAN)', highlight: true },
+      { label: '预测 ε + L_simple 增益', value: 'FID 13.51 ➔ 3.17 (质的飞跃)', highlight: true },
+      { label: '训练任意步 t 采样复杂度', value: 'O(1) 一步闭式重参数化' },
+      { label: '训练稳定性与分布覆盖', value: '100% 稳定 (零模式坍塌)' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      '前向闭式加噪与 L_simple 推导精读',
+      'DDPM 噪声调度 ᾱ_t 与逆向去噪轨迹实验台',
+      '预测均值 vs 预测噪声消融实验对比',
+      '核心概念双解词典'
+    ],
+    component: Ddpm2020App
+  },
+  {
+    id: 'alphafold2-2021',
+    folderName: 'Highly-accurate-protein-structure-prediction-with-AlphaFold',
+    titleZh: 'AlphaFold2 蛋白质三维结构预测：破解五十年生物学世纪难题的诺贝尔化学奖里程碑',
+    titleEn: 'Highly accurate protein structure prediction with AlphaFold (AlphaFold2)',
+    arxivId: 'Nature 2021 (Nobel Prize)',
+    doi: 'https://doi.org/10.1038/s41586-021-03819-2',
+    githubUrl: 'https://github.com/google-deepmind/alphafold',
+    authors: ['John Jumper', 'Richard Evans', 'Alexander Pritzel', 'Tim Green', 'Olaf Ronneberger', 'Demis Hassabis'],
+    affiliations: ['DeepMind (2024 诺贝尔化学奖得主)'],
+    publishDate: 'Nature 2021 (AI for Science 最高丰碑)',
+    category: '视觉与生成模型',
+    tags: ['AlphaFold2 (诺贝尔化学奖)', 'Evoformer 序列与成对双轨演化', 'Triangle Attention 三角形不等式偏置', 'IPA 不变点注意力 (SE(3)等变)', '0.96 Å 原子级精度'],
+    status: 'active',
+    tldrZh:
+      '荣膺 2024 诺贝尔化学奖的 AI for Science 巅峰巨作！把生物进化协同突变（MSA）与三维空间几何定律写进注意力机制：通过 48 层 Evoformer 的「三角形乘法更新与三角形自注意力」隐式强制三维距离满足三角形不等式，再由 SE(3) 等变「不变点注意力（IPA）」驱动残基刚体帧一步生成三维原子坐标，在 CASP14 将骨架误差压至 0.96 Å（小于单个碳原子半径）！',
+    keyMetrics: [
+      { label: 'CASP14 碳骨架中位误差', value: '0.96 Å (次优为 2.83 Å)', highlight: true },
+      { label: 'CASP14 自由建模 GDT_TS', value: '92.4 / 100 (达实验晶体精度)', highlight: true },
+      { label: '全球开源预测蛋白质数', value: '200,000,000+ (覆盖已知物种)' },
+      { label: '科学界最高荣誉', value: '2024 诺贝尔化学奖' }
+    ],
+    features: [
+      '5分钟通俗速通导览',
+      'Evoformer 三角形更新与 SE(3) IPA 精读',
+      'AlphaFold2 三角形注意力与刚体折叠实验台',
+      'CASP14 盲测与核心几何模块消融对比',
+      '核心概念双解词典'
+    ],
+    component: AlphaFold22021App
   }
 ];

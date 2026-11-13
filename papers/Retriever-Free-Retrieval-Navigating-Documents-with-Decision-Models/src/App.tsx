@@ -154,7 +154,7 @@ export default function App({ onBackToHub, initialView = 'beginner' }: AppProps 
 
           <div className="pt-4 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500 text-[11px]">
             <div>
-              本交互式学习平台依据学者研究成果进行结构化中文翻译与教育型探索展示。
+              Retriever-Free Retrieval: Navigating Documents with Decision Models
             </div>
             <div>
               arXiv:2610.35868 • Cornell University &amp; ASAPP
