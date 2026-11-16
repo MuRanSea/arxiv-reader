@@ -4,16 +4,19 @@ import {
   ArrowRight,
   Search,
   ExternalLink,
-  Compass
+  Compass,
+  Smartphone
 } from 'lucide-react';
 import { REGISTERED_PAPERS } from '../../papers/registry.js';
 import { ThemeToggle } from '../shared/components/ThemeToggle.js';
+import { PWAInstallButton } from '../modules/apk-exporter/components/PWAInstallButton.js';
 
 interface PaperHubProps {
   onSelectPaper: (paperId: string, initialView?: string) => void;
+  onOpenApkExporter?: () => void;
 }
 
-export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
+export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper, onOpenApkExporter }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('全部');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -58,7 +61,19 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {onOpenApkExporter && (
+              <button
+                type="button"
+                onClick={onOpenApkExporter}
+                data-testid="open-apk-exporter-btn"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span>导出安卓 APK / 手机阅读版</span>
+              </button>
+            )}
+            <PWAInstallButton onOpenExporter={onOpenApkExporter} compact />
             <ThemeToggle />
           </div>
         </div>
@@ -70,9 +85,21 @@ export const PaperHub: React.FC<PaperHubProps> = ({ onSelectPaper }) => {
         <section className="relative rounded-3xl overflow-hidden p-6 sm:p-10 bg-gradient-to-br from-slate-900 via-slate-900/90 to-emerald-950/40 border border-slate-800 shadow-2xl">
           <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>AI 经典与现代工业栈核心论文交互式精读库</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>AI 经典与现代工业栈核心论文交互式精读库</span>
+              </div>
+              {onOpenApkExporter && (
+                <button
+                  type="button"
+                  onClick={onOpenApkExporter}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-teal-300 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <Smartphone className="w-3.5 h-3.5" />
+                  <span>新增：一键导出安卓 APK 与手机离线阅读器 →</span>
+                </button>
+              )}
             </div>
 
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">

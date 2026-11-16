@@ -2,16 +2,23 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { PaperHub } from './portal/PaperHub.js';
 import { REGISTERED_PAPERS } from '../papers/registry.js';
 import { ThemeProvider } from './shared/theme/ThemeContext.js';
+import { ApkExporterStudio } from './modules/apk-exporter/ApkExporterStudio.js';
 
 export default function App() {
   const [activePaperId, setActivePaperId] = useState<string | null>(null);
   const [initialView, setInitialView] = useState<string>('beginner');
+  const [isApkExporterOpen, setIsApkExporterOpen] = useState<boolean>(false);
 
   // Handle URL hash routing for deep-linking and browser history
   useEffect(() => {
     const parseHash = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#/paper/')) {
+      if (hash.startsWith('#/apk-exporter')) {
+        setIsApkExporterOpen(true);
+        setActivePaperId(null);
+        window.scrollTo(0, 0);
+      } else if (hash.startsWith('#/paper/')) {
+        setIsApkExporterOpen(false);
         const parts = hash.replace('#/paper/', '').split('?');
         const paperId = parts[0];
         const params = new URLSearchParams(parts[1] || '');
@@ -20,9 +27,11 @@ export default function App() {
         setInitialView(view);
         window.scrollTo(0, 0);
       } else if (hash.includes('decisionrag')) {
+        setIsApkExporterOpen(false);
         setActivePaperId('decisionrag');
         window.scrollTo(0, 0);
       } else {
+        setIsApkExporterOpen(false);
         setActivePaperId(null);
         window.scrollTo(0, 0);
       }
@@ -34,13 +43,22 @@ export default function App() {
   }, []);
 
   const handleSelectPaper = (paperId: string, view: string = 'beginner') => {
+    setIsApkExporterOpen(false);
     setActivePaperId(paperId);
     setInitialView(view);
     window.location.hash = `#/paper/${paperId}?view=${view}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenApkExporter = () => {
+    setActivePaperId(null);
+    setIsApkExporterOpen(true);
+    window.location.hash = '#/apk-exporter';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleBackToHub = () => {
+    setIsApkExporterOpen(false);
     setActivePaperId(null);
     window.location.hash = '#/';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -58,13 +76,21 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      {ActivePaperComponent ? (
+      {isApkExporterOpen ? (
+        <ApkExporterStudio
+          onBackToHub={handleBackToHub}
+          onSelectPaper={handleSelectPaper}
+        />
+      ) : ActivePaperComponent ? (
         <ActivePaperComponent
           onBackToHub={handleBackToHub}
           initialView={initialView}
         />
       ) : (
-        <PaperHub onSelectPaper={handleSelectPaper} />
+        <PaperHub
+          onSelectPaper={handleSelectPaper}
+          onOpenApkExporter={handleOpenApkExporter}
+        />
       )}
     </ThemeProvider>
   );
